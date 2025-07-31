@@ -1,59 +1,91 @@
-body {
-  font-family: Arial, sans-serif;
-  background: #121212;
-  color: white;
-  margin: 0;
-  padding: 20px;
+/* styles.css */
+
+:root {
+  --verde: #2e7d32;
+  --rojo: #c62828;
+  --fondo: #f5f5f5;
+  --texto: #212121;
+  --fondo-claro: #ffffff;
+  --borde: #e0e0e0;
+  --fuente: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.app {
-  max-width: 600px;
+body {
+  margin: 0;
+  font-family: var(--fuente);
+  background-color: var(--fondo);
+  color: var(--texto);
+  padding-bottom: 4rem;
+}
+
+header {
+  background-color: var(--verde);
+  color: white;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+header p {
+  margin: 0.5rem 0 0;
+  font-size: 1rem;
+  font-style: italic;
+}
+
+.contenedor {
+  padding: 1rem;
+  max-width: 800px;
   margin: auto;
 }
 
-.create-post {
-  background: #1e1e1e;
-  padding: 15px;
+section {
+  background-color: var(--fondo-claro);
+  border: 1px solid var(--borde);
   border-radius: 8px;
-  margin-bottom: 20px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
-textarea {
-  width: 100%;
-  height: 80px;
-  padding: 10px;
-  resize: none;
-  border: none;
-  border-radius: 6px;
-  background: #2a2a2a;
-  color: white;
+.titulo-seccion {
+  color: var(--verde);
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
 }
 
-button {
-  margin-top: 10px;
-  padding: 8px 16px;
-  background-color: #1da1f2;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+p {
+  margin: 0.25rem 0;
+  line-height: 1.4;
 }
 
-.post {
-  background: #1e1e1e;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 15px;
+/* Alertas */
+section#notificaciones p:first-child {
+  color: var(--rojo);
+  font-weight: bold;
 }
 
-.post-actions {
-  display: flex;
-  gap: 15px;
-  margin-top: 10px;
-  font-size: 0.9rem;
-  cursor: pointer;
+/* Modo accesible */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
 }
 
-.post-actions span {
-  user-select: none;
+@media (max-width: 600px) {
+  body {
+    font-size: 1.05rem;
+  }
+
+  .titulo-seccion {
+    font-size: 1.1rem;
+  }
+}
+
+/* Soporte para modo texto grande */
+body.texto-grande {
+  font-size: 1.25rem;
 }
