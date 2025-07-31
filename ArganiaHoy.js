@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     consumoPrecios: {
       precios: {
         canasta: "$10.000",
-        nafta: "$139,49/litro",
+        nafta: "$139,4/litro",
         transporte: "$300",
         alquiler: "$3.015"
       },
