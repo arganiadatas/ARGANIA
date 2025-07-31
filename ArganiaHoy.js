@@ -70,12 +70,11 @@ document.addEventListener("DOMContentLoaded", () => {
   seccion("resumen-diario", `
     <h2 class="titulo-seccion">📱 Resumen Diario</h2>
     <p>📈 Tipo de cambio oficial: ${data.resumenDiario.cambioOficial} | Blue: ${data.resumenDiario.cambioBlue}</p>
-    <p>🛒 Inflación: Diaria ${data.resumenDiario.inflacion.diaria} | Mensual ${data.resumenDiario.inflacion.mensual} | Anualizada ${data.resumenDiario.inflacion.anual}</p>
+    <p>🛒 Inflación: Mensual ${data.resumenDiario.inflacion.mensual}</p>
     <p>🏭 Producción industrial (ayer): ${data.resumenDiario.produccionIndustrial}</p>
     <p>📉 PBI actual: ${data.resumenDiario.pbiActual} | Potencial: ${data.resumenDiario.pbiPotencial}</p>
     <p>💵 Reservas internacionales: ${data.resumenDiario.reservas}</p>
     <p>🏛️ Balance fiscal diario: ${data.resumenDiario.balanceFiscal}</p>
-    <p>⏳ Fin del acuerdo "Inflación 0%": ${data.resumenDiario.finAcuerdoDias} días</p>
   `);
 
   seccion("datos-monetarios", `
@@ -98,7 +97,6 @@ document.addEventListener("DOMContentLoaded", () => {
     <p>🚢 Exportaciones: ${data.comercioExterior.exportaciones} | Importaciones: ${data.comercioExterior.importaciones}</p>
     <p>💬 ${data.comercioExterior.tratados}</p>
     <p>📦 Más exportados: ${data.comercioExterior.productos.exportados.join(", ")} | Más importados: ${data.comercioExterior.productos.importados.join(", ")}</p>
-    <p>🏦 FMI (usado/total): ${data.comercioExterior.fmi}</p>
   `);
 
   seccion("empleo-sociedad", `
