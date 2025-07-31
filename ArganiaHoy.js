@@ -3,67 +3,63 @@
 document.addEventListener("DOMContentLoaded", () => {
   const data = {
     resumenDiario: {
-      cambioOficial: "$36,65",
-      cambioBlue: "$25",
+      cambioOficial: "$43,53 (+2,33%)",
+      cambioBlue: "$55 (+22,22%)",
       inflacion: {
-        diaria: "0.52%",
-        mensual: "9.14%",
-        anual: "2.361%"
+        mensual: "4.26%",
       },
-      produccionIndustrial: "-57.97%",
-      pbiActual: "$177.547M",
-      pbiPotencial: "$300.000M",
-      reservas: "US$ 510.000M",
-      balanceFiscal: "-$90.7 Mil Millones",
-      finAcuerdoDias: 31
+      produccionIndustrial: "+196,56%",
+      pbiActual: "$1.670.429M",
+      pbiPotencial: "$700.000M",
+      reservas: "US$ 962.000M",
+      balanceFiscal: "-$427,158 Millones"
     },
     datosMonetarios: {
-      tasaInteres: "110%",
+      tasaInteres: "10%",
       emision: "$0",
       ofertaDemanda: "Equilibrada",
-      tensionMonetaria: "3.0/10",
+      tensionMonetaria: "1.0/10",
       intervencion: "No hubo"
     },
     consumoPrecios: {
       precios: {
         canasta: "$10.000",
-        nafta: "$13,66/litro",
-        transporte: "$125",
-        alquiler: "$1.522,08"
+        nafta: "$139,49/litro",
+        transporte: "$300",
+        alquiler: "$3.015"
       },
       variacionSectorial: {
-        alimentos: "-0.6%",
-        textil: "0.0%",
+        alimentos: "0.0%",
+        textil: "-38.8%",
         construccion: "0.0%"
       }
     },
     comercioExterior: {
-      exportaciones: "US$ 28.951M",
-      importaciones: "US$ 201M",
-      tratados: "El Gobierno negocia con Argentina, Brasil y Chile.",
+      exportaciones: "US$ 6.499M",
+      importaciones: "US$ 178M",
+      tratados: "-",
       productos: {
         exportados: ["Joyas", "Automoviles", "Whisky"],
         importados: ["Tecnologia", "Materia Prima"]
       },
-      fmi: "US$ 0M / US$ 5.000M"
     },
     empleoSociedad: {
-      empleo: "88.14%",
-      desempleo: "11.86%",
-      censo: "5.3M hab.",
-      convocatorias: "Vacantes en salud y educación",
-      cursos: ["Hidrógeno Verde", "Logística", "Programación"]
+      empleo: "97.34%",
+      desempleo: "2.66%",
+      censo: "5.6M hab.",
+      convocatorias: "-",
+      cursos: ["-"]
     },
     notificaciones: [
-      "⚠️ El BCRA Establecio nuevas bandas en la 'flotacion sucia'"
+      "⚠️ El Gobierno elimino impuestos nacionales"
     ],
     herramientas: [
       "🔄PROXIMAMENTE "
     ],
     comunicados: {
-      resumen: "Se unifica tipo de cambio",
-      conferencia: "Julieta Medina – 'Vamos por la estabilización definitiva'",
-      evento: "Licitación de deuda – 1 de junio"
+      resumen: "'NOS CONVERTIMOS EN EL PAIS MAS LIBRE DEL MUNDO' - Presidente Rosales",
+      conferencia: "'Los impuestos nacionales serán 0%' - Ministro de Economía",
+      evento: "-"
     }
   };
 
