@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const data = {
     resumenDiario: {
       cambioOficial: "$49,60 (+4,63%)",
-      cambioBlue: "$55 (+0,00%)",
+      cambioBlue: "$55 (0,00%)",
       inflacion: {
         mensual: "4.26%",
       },
