@@ -51,8 +51,8 @@ document.addEventListener("DOMContentLoaded", () => {
       cursos: ["-"]
     },
     notificaciones: [
-      "⚠️ El Gobierno elimino impuestos nacionales"
-      "⚠️ Se recorto el 50% de los empleados del Sector Minero"
+      "⚠️ El Gobierno elimino impuestos nacionales",
+      "⚠️ Se recorto el 50% de los empleados del Sector Minero",
       "⚠️ El Min. Economía, Desregulacion, y ANSES Aumentaron los requisitos para inscribirse."
     ],
     herramientas: [
