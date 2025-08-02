@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
     notificaciones: [
       "⚠️ El Gobierno elimino impuestos nacionales",
       "⚠️ Se recorto el 50% de los empleados del Sector Minero",
-      "⚠️ El Min. Economía, Desregulacion, y ANSES Aumentaron los requisitos para inscribirse."
+      "⚠️ El Min. Economía, Desregulacion, y ANSES Aumentaron los requisitos para inscribirse.",
     ],
     herramientas: [
       "🔄PROXIMAMENTE "
