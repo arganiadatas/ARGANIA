@@ -3,16 +3,16 @@
 document.addEventListener("DOMContentLoaded", () => {
   const data = {
     resumenDiario: {
-      cambioOficial: "$43,53 (+2,33%)",
-      cambioBlue: "$55 (+22,22%)",
+      cambioOficial: "$49,60 (+4,63%)",
+      cambioBlue: "$55 (+0,00%)",
       inflacion: {
         mensual: "4.26%",
       },
-      produccionIndustrial: "+196,56%",
+      produccionIndustrial: "+290,16%",
       pbiActual: "$1.670.429M",
-      pbiPotencial: "$700.000M",
-      reservas: "US$ 962.000M",
-      balanceFiscal: "-$427,158 Millones"
+      pbiPotencial: "$1B",
+      reservas: "US$ 868.000M",
+      balanceFiscal: "$766,481 Millones"
     },
     datosMonetarios: {
       tasaInteres: "10%",
@@ -52,14 +52,16 @@ document.addEventListener("DOMContentLoaded", () => {
     },
     notificaciones: [
       "⚠️ El Gobierno elimino impuestos nacionales"
+      "⚠️ Se recorto el 50% de los empleados del Sector Minero"
+      "⚠️ El Min. Economía, Desregulacion, y ANSES Aumentaron los requisitos para inscribirse."
     ],
     herramientas: [
       "🔄PROXIMAMENTE "
     ],
     comunicados: {
-      resumen: "'NOS CONVERTIMOS EN EL PAIS MAS LIBRE DEL MUNDO' - Presidente Rosales",
+      resumen: "La activida economica aumento 66% en Julio",
       conferencia: "'Los impuestos nacionales serán 0%' - Ministro de Economía",
-      evento: "-"
+      evento: "3 de Agosto la inflacion mensual de Julio"
     }
   };
 
