@@ -67,16 +67,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById(id).innerHTML = html;
   };
 
-  
-
-  const cotizaciones = [
-  { fecha: "2 ago", valor: "$49,60" },
-  { fecha: "1 ago", valor: "$47,41" },
-  { fecha: "31 jul", valor: "$40,53" },
-  { fecha: "30 jul", valor: "$39,61" },
-  { fecha: "29 jul", valor: "$32,06" },
-];
-
   seccion("resumen-diario", `
     <h2 class="titulo-seccion">📱 Resumen Diario</h2>
     <p>📈 Tipo de cambio oficial: ${data.resumenDiario.cambioOficial} | Blue: ${data.resumenDiario.cambioBlue}</p>
@@ -135,22 +125,4 @@ document.addEventListener("DOMContentLoaded", () => {
     <p>🎙️ Conferencia: ${data.comunicados.conferencia}</p>
     <p>📅 Próximo evento: ${data.comunicados.evento}</p>
   `);
-  const container = document.getElementById("datos-monetarios");
-
-const div = document.createElement("div");
-div.className = "finanzas-argy";
-
-div.innerHTML = `
-  <h2>Finanzas Argy</h2>
-  <table>
-    <thead>
-      <tr><th>Fecha</th><th>Dólar Oficial</th></tr>
-    </thead>
-    <tbody>
-      ${cotizaciones.map(c => `<tr><td>${c.fecha}</td><td>${c.valor}</td></tr>`).join("")}
-    </tbody>
-  </table>
-`;
-
-container.appendChild(div);
 });
