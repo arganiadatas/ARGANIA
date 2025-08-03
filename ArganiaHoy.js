@@ -3,16 +3,16 @@
 document.addEventListener("DOMContentLoaded", () => {
   const data = {
     resumenDiario: {
-      cambioOficial: "$49,60 (+4,63%)",
-      cambioBlue: "$55 (0,00%)",
+      cambioOficial: "$50,03 (+0,86%)",
+      cambioBlue: "$35 (-36,36%)",
       inflacion: {
         mensual: "4.26%",
       },
       produccionIndustrial: "+290,16%",
       pbiActual: "$1.670.429M",
       pbiPotencial: "$1B",
-      reservas: "US$ 868.000M",
-      balanceFiscal: "$766,481 Millones"
+      reservas: "US$ 805.000M",
+      balanceFiscal: "$80,093 Millones"
     },
     datosMonetarios: {
       tasaInteres: "10%",
@@ -51,16 +51,16 @@ document.addEventListener("DOMContentLoaded", () => {
       cursos: ["-"]
     },
     notificaciones: [
-      "⚠️ El Gobierno elimino impuestos nacionales",
-      "⚠️ Se recorto el 50% de los empleados del Sector Minero",
-      "⚠️ El Min. Economía, Desregulacion, y ANSES Aumentaron los requisitos para inscribirse.",
+      "El Sector Minero comenzó a invertir en si mismo $130,000 Millones. Sin ayuda del estado, El Presidente anuncio que trabajaran para librarlos del estado",
+      "El dólar blue se desploma a $35 Pesos, Economistas proyectan un dólar a $9 Pesos a fines de agosto.",
+      "Se elimino el Impuesto a Bienes e Inmuebles, y a las Bebidas Alcoholicas",
     ],
     herramientas: [
       "🔄PROXIMAMENTE "
     ],
     comunicados: {
-      resumen: "La activida economica aumento 66% en Julio",
-      conferencia: "'Los impuestos nacionales serán 0%' - Ministro de Economía",
+      resumen: "La actividad economica aumento 66% en Julio",
+      conferencia: "'La subida del dolar oficial no nos preocupa'",
       evento: "3 de Agosto la inflacion mensual de Julio"
     }
   };
