@@ -3,23 +3,23 @@
 document.addEventListener("DOMContentLoaded", () => {
   const data = {
     resumenDiario: {
-      cambioOficial: "$50,03 (+0,86%)",
-      cambioBlue: "$35 (-36,36%)",
+      cambioOficial: "$30,00 (-40,03%)",
+      cambioBlue: "$35 (0,00%)",
       inflacion: {
-        mensual: "4.26%",
+        mensual: "1.09%",
       },
-      produccionIndustrial: "+290,16%",
+      produccionIndustrial: "+454,67%",
       pbiActual: "$1.670.429M",
       pbiPotencial: "$1B",
       reservas: "US$ 805.000M",
-      balanceFiscal: "$80,093 Millones"
+      balanceFiscal: "$873,685 Millones"
     },
     datosMonetarios: {
       tasaInteres: "10%",
       emision: "$0",
       ofertaDemanda: "Equilibrada",
       tensionMonetaria: "1.0/10",
-      intervencion: "No hubo"
+      intervencion: "Compra: US$230,000 Millones"
     },
     consumoPrecios: {
       precios: {
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     },
     comercioExterior: {
-      exportaciones: "US$ 6.499M",
+      exportaciones: "US$ 158M",
       importaciones: "US$ 178M",
       tratados: "-",
       productos: {
