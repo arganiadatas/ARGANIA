@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="icon" href="https://pbs.twimg.com/profile_images/1628520220544335883/Y_USf6LP_400x400.png">
+    <title>Dólar Blue - ARGANIA</title>
+
+    <!-- Cargar Lightweight Charts correctamente -->
+    <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.0.0/dist/lightweight-charts.standalone.production.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        #chartContainer {
+            width: 90%;
+            height: 500px;
+            margin: 20px auto;
+            border: 1px solid #444;
+            background-color: #1e1e1e;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>📊 Cotización en Vivo</h2>
+    <div id="chartContainer"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            try {
+                // Verificar si LightweightCharts está cargado
+                console.log("LightweightCharts:", LightweightCharts);
+
+                if (typeof LightweightCharts === "undefined") {
+                    throw new Error("Error: LightweightCharts no se ha cargado correctamente.");
+                }
+
+                // Crear gráfico
+                const chartContainer = document.getElementById('chartContainer');
+                const chart = LightweightCharts.createChart(chartContainer, {
+                    width: chartContainer.clientWidth,
+                    height: 500,
+                    layout: {
+                        backgroundColor: '#1e1e1e',
+                        textColor: 'white',
+                    },
+                    grid: {
+                        vertLines: { color: '#444' },
+                        horzLines: { color: '#444' },
+                    },
+                    timeScale: {
+                        timeVisible: true,
+                        secondsVisible: false,
+                    }
+                });
+
+                console.log(chart); // Verificar si el objeto se crea correctamente
+
+                // Agregar la serie de velas japonesas
+                const candleSeries = chart.addCandlestickSeries();
+
+                // Datos de prueba
+                const data = [
+                    { time: '2024-11-25', open: 5, high: 5, low: 5, close: 5 },
+                    { time: '2024-11-26', open: 5, high: 15, low: 15, close: 15 },
+                    { time: '2024-11-27', open: 15, high: 39.50, low: 39.50, close: 39.50 },
+                    { time: '2024-11-28', open: 39.50, high: 34.51, low: 34.51, close: 34.51 },
+                    { time: '2024-11-29', open: 34.51, high: 29.52, low: 29.52, close: 29.52 },
+                    { time: '2024-11-30', open: 29.52, high: 24.53, low: 24.53, close: 24.53 },
+                    { time: '2024-12-01', open: 24.53, high: 19.52, low: 19.52, close: 19.52 },
+                    { time: '2024-12-02', open: 19.52, high: 14.52, low: 14.52, close: 14.52 },
+                    { time: '2024-12-03', open: 14.52, high: 9.53, low: 9.53, close: 9.53 },
+                    { time: '2024-12-04', open: 9.53, high: 9.03, low: 9.03, close: 9.03 },
+                    { time: '2024-12-05', open: 9.03, high: 9.53, low: 9.53, close: 9.53 },
+                    { time: '2024-12-06', open: 9.53, high: 9.53, low: 9.53, close: 9.53 },
+                    { time: '2024-12-07', open: 9.53, high: 8.53, low: 8.53, close: 8.53 },
+                    { time: '2024-12-08', open: 8.53, high: 8.05, low: 8.03, close: 8.03 },
+                    { time: '2024-12-09', open: 8.03, high: 7.53, low: 7.53, close: 7.53 },
+                    { time: '2024-12-10', open: 7.53, high: 7.03, low: 7.03, close: 7.03 },
+                    { time: '2024-12-11', open: 7.03, high: 6.55, low: 6.55, close: 6.55 },
+                    { time: '2024-12-12', open: 6.55, high: 6.05, low: 6.05, close: 6.05 },
+                    { time: '2024-12-13', open: 6.05, high: 5.55, low: 5.55, close: 5.55 },
+                    { time: '2024-12-14', open: 5.55, high: 5.05, low: 5.05, close: 5.05 },
+                    { time: '2024-12-15', open: 5.05, high: 5.05, low: 5.05, close: 5.05 },
+                    { time: '2024-12-16', open: 5.05, high: 5.05, low: 5.55, close: 5.05 },
+                    { time: '2024-12-17', open: 5.05, high: 5.04, low: 5.04, close: 5.04 },
+                    { time: '2024-12-18', open: 5.04, high: 5.04, low: 5.04, close: 5.04 },
+                    { time: '2024-12-19', open: 5.03, high: 5.03, low: 5.03, close: 5.03 },
+                    { time: '2024-12-20', open: 5.03, high: 5.03, low: 5.03, close: 5.03 },
+                    { time: '2024-12-21', open: 5.03, high: 5.08, low: 5.08, close: 5.08 },
+                    { time: '2024-12-22', open: 5.08, high: 5.13, low: 5.13, close: 5.13 },
+                    { time: '2024-12-23', open: 5.13, high: 5.18, low: 5.18, close: 5.18 },
+                    { time: '2024-12-24', open: 5.18, high: 6.23, low: 6.23, close: 6.23 },
+                    { time: '2024-12-25', open: 6.23, high: 7.28, low: 7.28, close: 7.28 },
+                    { time: '2024-12-26', open: 7.28, high: 8.27, low: 8.27, close: 8.27 },
+                    { time: '2024-12-27', open: 8.27, high: 8.27, low: 8.27, close: 8.27 },
+                    { time: '2024-12-28', open: 8.27, high: 8.32, low: 8.32, close: 8.32 },
+                    { time: '2024-12-29', open: 8.32, high: 8.27, low: 8.27, close: 8.27 },
+                    { time: '2024-12-30', open: 8.27, high: 8.22, low: 8.22, close: 8.22 },
+                    { time: '2024-12-31', open: 8.22, high: 8.17, low: 8.17, close: 8.17 },
+                    { time: '2025-01-01', open: 8.17, high: 8.12, low: 8.12, close: 8.12 },
+                    { time: '2025-01-02', open: 8.12, high: 8.07, low: 8.07, close: 8.07 },
+                    { time: '2025-01-03', open: 8.07, high: 8.02, low: 8.02, close: 8.02 },
+                    { time: '2025-01-04', open: 8.02, high: 7.97, low: 7.97, close: 7.97 },
+                    { time: '2025-01-05', open: 7.97, high: 7.92, low: 7.92, close: 7.92 },
+                    { time: '2025-01-06', open: 7.92, high: 7.87, low: 7.87, close: 7.87 },
+                    { time: '2025-01-07', open: 7.87, high: 7.92, low: 7.92, close: 7.92 },
+                    { time: '2025-01-08', open: 7.92, high: 7.87, low: 7.87, close: 7.87 },
+                    { time: '2025-01-09', open: 7.87, high: 7.82, low: 7.82, close: 7.82 },
+                    { time: '2025-01-10', open: 7.82, high: 7.77, low: 7.77, close: 7.77 },
+                    { time: '2025-01-11', open: 7.77, high: 7.72, low: 7.72, close: 7.72 },
+                    { time: '2025-01-12', open: 7.72, high: 7.67, low: 7.67, close: 7.67 },
+                    { time: '2025-01-13', open: 7.67, high: 7.62, low: 7.62, close: 7.62 },
+                    { time: '2025-01-14', open: 7.62, high: 7.57, low: 7.57, close: 7.57 },
+                    { time: '2025-01-15', open: 7.57, high: 7.52, low: 7.52, close: 7.52 },
+                    { time: '2025-01-16', open: 7.52, high: 7.47, low: 7.47, close: 7.47 },
+                    { time: '2025-01-17', open: 7.47, high: 7.42, low: 7.42, close: 7.42 },
+                    { time: '2025-01-18', open: 7.42, high: 7.37, low: 7.37, close: 7.37 },
+                    { time: '2025-01-19', open: 7.37, high: 7.32, low: 7.32, close: 7.32 },
+                    { time: '2025-01-20', open: 7.32, high: 7.37, low: 7.37, close: 7.37 },
+                    { time: '2025-01-21', open: 7.37, high: 7.42, low: 7.42, close: 7.42 },
+                    { time: '2025-01-22', open: 7.42, high: 8.47, low: 8.47, close: 8.47 },
+                    { time: '2025-01-23', open: 8.47, high: 9.52, low: 9.52, close: 9.52 },
+                    { time: '2025-01-24', open: 9.52, high: 9.47, low: 9.47, close: 9.47 },
+                    { time: '2025-01-25', open: 9.47, high: 9.42, low: 9.42, close: 9.42 },
+                    { time: '2025-01-26', open: 9.42, high: 9.37, low: 9.37, close: 9.37 },
+                    { time: '2025-01-27', open: 9.37, high: 9.42, low: 9.42, close: 9.42 },
+                    { time: '2025-01-28', open: 9.42, high: 9.47, low: 9.47, close: 9.47 },
+                    { time: '2025-01-29', open: 9.47, high: 9.42, low: 9.42, close: 9.42 },
+                    { time: '2025-01-30', open: 9.42, high: 9.37, low: 9.37, close: 9.37 },
+                    { time: '2025-01-31', open: 9.37, high: 9.32, low: 9.32, close: 9.32 },
+                    { time: '2025-02-01', open: 9.32, high: 9.27, low: 9.27, close: 9.27 },
+                    { time: '2025-02-02', open: 9.27, high: 9.22, low: 9.22, close: 9.22 },
+                    { time: '2025-02-03', open: 9.22, high: 9.17, low: 9.17, close: 9.17 },
+                    { time: '2025-02-04', open: 9.17, high: 9.12, low: 9.12, close: 9.12 },
+                    { time: '2025-02-05', open: 9.12, high: 9.07, low: 9.07, close: 9.07 },
+                    { time: '2025-02-06', open: 9.07, high: 9.02, low: 9.02, close: 9.02 },
+                    { time: '2025-02-07', open: 9.02, high: 8.97, low: 8.97, close: 8.97 },
+                    { time: '2025-02-08', open: 8.97, high: 8.92, low: 8.92, close: 8.92 },
+                    { time: '2025-02-09', open: 8.92, high: 8.87, low: 8.87, close: 8.87 },
+                    { time: '2025-02-10', open: 8.87, high: 8.92, low: 8.92, close: 8.92 },
+                    { time: '2025-02-11', open: 8.92, high: 8.87, low: 8.87, close: 8.87 },
+                    { time: '2025-02-12', open: 8.87, high: 8.92, low: 8.92, close: 8.92 },
+                    { time: '2025-02-13', open: 8.92, high: 8.97, low: 8.97, close: 8.97 },
+                    { time: '2025-02-14', open: 8.97, high: 8.92, low: 8.92, close: 8.92 },
+                    { time: '2025-02-15', open: 8.92, high: 8.92, low: 8.92, close: 8.92 },
+                    { time: '2025-02-16', open: 8.92, high: 8.92, low: 8.92, close: 8.92 },
+                    { time: '2025-02-17', open: 8.92, high: 8.92, low: 8.92, close: 8.92 },
+                    { time: '2025-02-18', open: 8.92, high: 8.92, low: 8.92, close: 8.92 },
+                    { time: '2025-02-19', open: 8.92, high: 8.92, low: 8.92, close: 8.92 },
+                    { time: '2025-02-20', open: 8.92, high: 8.92, low: 8.92, close: 8.92 },
+                    { time: '2025-02-21', open: 8.92, high: 11.29, low: 11.29, close: 11.29 },
+                    { time: '2025-02-22', open: 11.29, high: 22.71, low: 22.71, close: 22.71 },
+                    { time: '2025-02-23', open: 22.71, high: 22.36, low: 22.36, close: 22.36 },
+                    { time: '2025-02-24', open: 22.36, high: 24.37, low: 24.37, close: 24.37 },
+                    { time: '2025-02-25', open: 24.37, high: 24.22, low: 24.22, close: 24.22 },
+                    { time: '2025-02-26', open: 24.22, high: 23.61, low: 23.61, close: 23.61 },
+                    { time: '2025-02-27', open: 23.61, high: 20.51, low: 20.51, close: 20.51 },
+                    { time: '2025-02-28', open: 20.51, high: 19.18, low: 19.18, close: 19.18 },
+                    { time: '2025-03-01', open: 19.18, high: 16.85, low: 16.85, close: 16.85 },
+                    { time: '2025-03-02', open: 16.85, high: 13.73, low: 13.73, close: 13.73 },
+                    { time: '2025-03-03', open: 13.73, high: 10.79, low: 10.79, close: 10.79 },
+                    { time: '2025-03-04', open: 10.79, high: 10.78, low: 10.78, close: 10.78 },
+                    { time: '2025-03-05', open: 10.78, high: 10.79, low: 10.79, close: 10.79 },
+                    { time: '2025-03-06', open: 10.79, high: 10.94, low: 10.94, close: 10.94 },
+                    { time: '2025-03-07', open: 10.94, high: 10.59, low: 10.59, close: 10.59 },
+                    { time: '2025-03-08', open: 10.59, high: 8.92, low: 8.92, close: 8.92 },
+                    { time: '2025-03-09', open: 8.92, high: 9.05, low: 9.05, close: 9.05 },
+                    { time: '2025-03-10', open: 9.05, high: 8.87, low: 8.87, close: 8.87 },
+                    { time: '2025-03-11', open: 8.87, high: 9.39, low: 9.39, close: 9.39 },
+                    { time: '2025-03-12', open: 9.39, high: 10.14, low: 10.14, close: 10.14 },
+                    { time: '2025-03-13', open: 10.14, high: 11.16, low: 11.16, close: 11.16 },
+                    { time: '2025-03-14', open: 11.16, high: 11.61, low: 11.61, close: 11.61 },
+                    { time: '2025-03-15', open: 11.61, high: 11.54, low: 11.54, close: 11.54 },
+                    { time: '2025-03-16', open: 11.54, high: 8.52, low: 8.52, close: 8.52 },
+                    { time: '2025-03-17', open: 8.52, high: 4.89, low: 4.89, close: 4.89 },
+                    { time: '2025-03-18', open: 4.89, high: 2.35, low: 2.35, close: 2.35 },
+                    { time: '2025-03-19', open: 2.35, high: 1.85, low: 1.85, close: 1.85 },
+                    { time: '2025-03-20', open: 1.85, high: 2.47, low: 2.47, close: 2.47 },
+                    { time: '2025-03-21', open: 2.47, high: 2.48, low: 2.48, close: 2.48 },
+                    { time: '2025-03-22', open: 2.48, high: 2.49, low: 2.49, close: 2.49 },
+                    { time: '2025-03-23', open: 2.49, high: 2.55, low: 2.55, close: 2.55 },
+                    { time: '2025-03-24', open: 2.55, high: 2.34, low: 2.34, close: 2.34 },
+                    { time: '2025-03-25', open: 2.34, high: 2.40, low: 2.40, close: 2.40 },
+                    { time: '2025-03-26', open: 2.40, high: 2.34, low: 2.34, close: 2.34 },
+                    { time: '2025-03-27', open: 2.34, high: 2.56, low: 2.56, close: 2.56 },
+                    { time: '2025-03-28', open: 2.56, high: 2.56, low: 2.56, close: 2.56 },
+                    { time: '2025-03-29', open: 2.56, high: 2.75, low: 2.75, close: 2.75 },
+                    { time: '2025-03-30', open: 2.75, high: 2.87, low: 2.87, close: 2.87 },
+                    { time: '2025-03-31', open: 2.87, high: 2.67, low: 2.67, close: 2.67 },
+                    { time: '2025-04-01', open: 2.67, high: 4.28, low: 4.28, close: 4.28 },
+                    { time: '2025-04-02', open: 4.28, high: 3.44, low: 3.44, close: 3.44 },
+                    { time: '2025-04-03', open: 3.44, high: 3.77, low: 3.24, close: 3.24 },
+                    { time: '2025-04-04', open: 3.24, high: 3.48, low: 3.48, close: 3.48 },
+                    { time: '2025-04-05', open: 3.48, high: 5.17, low: 5.17, close: 5.17 },
+                    { time: '2025-04-06', open: 5.17, high: 4.55, low: 4.34, close: 4.34 },
+                    { time: '2025-04-07', open: 4.34, high: 6.41, low: 6.41, close: 6.41 },
+                    { time: '2025-04-08', open: 6.41, high: 6.94, low: 6.94, close: 6.94 },
+                    { time: '2025-04-09', open: 6.94, high: 6.08, low: 6.08, close: 6.08 },
+                    { time: '2025-04-10', open: 6.08, high: 8.77, low: 7.53, close: 8.49 },
+                    { time: '2025-04-11', open: 8.49, high: 6.66, low: 6.55, close: 6.66 },
+                    { time: '2025-04-12', open: 6.66, high: 6.42, low: 6.02, close: 6.42 },
+                    { time: '2025-04-13', open: 6.42, high: 6.91, low: 5.72, close: 6.91 },
+                    { time: '2025-04-14', open: 6.91, high: 6.77, low: 6.57, close: 6.64 },
+                    { time: '2025-04-15', open: 6.64, high: 7.71, low: 7.44, close: 7.44 },
+                    { time: '2025-04-16', open: 7.44, high: 7.60, low: 7.42, close: 7.42 },
+                    { time: '2025-04-17', open: 7.42, high: 7.47, low: 6.93, close: 7.02 },
+                    { time: '2025-04-18', open: 7.02, high: 6.67, low: 5.48, close: 6.67 },
+                    { time: '2025-04-19', open: 6.67, high: 14.19, low: 13.51, close: 14.19 },
+                    { time: '2025-04-20', open: 14.19, high: 16.94, low: 14.02, close: 15.94 },
+                    { time: '2025-04-21', open: 15.94, high: 130.87, low: 20.56, close: 130.87 },
+                    { time: '2025-04-22', open: 130.87, high: 417.18, low: 84.74, close: 417.18 },
+                    { time: '2025-04-23', open: 417.18, high: 1163, low: 408.77, close: 965.21 },
+                    { time: '2025-04-24', open: 965.21, high: 4100, low: 3512.12, close: 3986 },
+                    { time: '2025-04-25', open: 3986, high: 3900, low: 1838, close: 1838 },
+                    { time: '2025-04-26', open: 1838, high: 2597, low: 837.30, close: 837.30 },
+                    { time: '2025-04-27', open: 837.30, high: 1274, low: 1094, close: 1094 },
+                    { time: '2025-04-28', open: 1094, high: 1272, low: 1255, close: 1255 },
+                    { time: '2025-04-29', open: 1255, high: 1345, low: 1255, close: 1345 },
+                    { time: '2025-04-30', open: 1345, high: 1410, low: 1380, close: 1380 },
+                    { time: '2025-05-01', open: 1380, high: 1415, low: 1375, close: 1415 },
+                    { time: '2025-05-02', open: 1415, high: 1095, low: 1080, close: 1090 },
+                    { time: '2025-05-03', open: 1090, high: 1235, low: 1175, close: 1175 },
+                    { time: '2025-05-04', open: 1175, high: 1320, low: 1000, close: 1000 },
+                    { time: '2025-05-05', open: 1000, high: 1210, low: 420, close: 420 },
+                    { time: '2025-05-06', open: 420, high: 235, low: 210, close: 210 },
+                    { time: '2025-05-07', open: 210, high: 210, low: 125, close: 175 },
+                    { time: '2025-05-08', open: 175, high: 140, low: 70, close: 75 },
+                    { time: '2025-05-09', open: 75, high: 244.37, low: 55.60, close: 244.37 },
+                    { time: '2025-05-10', open: 244.37, high: 274.87, low: 160.74, close: 209.58 },
+                    { time: '2025-05-11', open: 209.58, high: 300.77, low: 71.68, close: 299.77 },
+                    { time: '2025-05-12', open: 299.77, high: 602.49, low: 458.89, close: 436.78 },
+                    { time: '2025-05-13', open: 436.78, high: 367.47, low: 238.00, close: 258.67 },
+                    { time: '2025-05-14', open: 258.67, high: 244.70, low: 178.16, close: 178.16 },
+                    { time: '2025-05-15', open: 178.16, high: 175, low: 131.20, close: 175 },
+                    { time: '2025-05-16', open: 175, high: 205, low: 175, close: 175 },
+                    { time: '2025-05-17', open: 175, high: 175, low: 140, close: 145 },
+                    { time: '2025-05-18', open: 145, high: 150, low: 110, close: 110 },
+                    { time: '2025-05-19', open: 110, high: 60, low: 40, close: 40 },
+                    { time: '2025-05-20', open: 40, high: 320, low: 30, close: 320 },
+                    { time: '2025-05-21', open: 320, high: 510, low: 310, close: 490 },
+                    { time: '2025-05-22', open: 490, high: 990, low: 310, close: 310 },
+                    { time: '2025-05-23', open: 310, high: 400, low: 400, close: 400 },
+                    { time: '2025-05-24', open: 400, high: 375, low: 365, close: 365 },
+                    { time: '2025-05-25', open: 365, high: 390, low: 45, close: 45 },
+                    { time: '2025-05-26', open: 45, high: 45, low: 40, close: 40 },
+                    { time: '2025-05-27', open: 40, high: 40, low: 35, close: 40 },
+                    { time: '2025-05-28', open: 40, high: 40, low: 35, close: 35 },
+                    { time: '2025-05-29', open: 35, high: 30, low: 30, close: 30 },
+                    { time: '2025-05-30', open: 30, high: 30, low: 25, close: 25 },
+                    { time: '2025-05-31', open: 25, high: 30, low: 20, close: 20 },
+                    { time: '2025-06-01', open: 20, high: 20, low: 20, close: 20 },
+                    { time: '2025-06-02', open: 20, high: 20, low: 20, close: 20 },
+                    { time: '2025-06-03', open: 20, high: 25, low: 20, close: 25 },
+                    { time: '2025-06-04', open: 25, high: 25, low: 20, close: 20 },
+                    { time: '2025-06-05', open: 20, high: 20, low: 20, close: 20 },
+                    { time: '2025-06-06', open: 20, high: 20, low: 20, close: 20 },
+                    { time: '2025-06-07', open: 20, high: 25, low: 20, close: 25 },
+                    { time: '2025-06-08', open: 25, high: 25, low: 25, close: 25 },
+                    { time: '2025-06-09', open: 25, high: 25, low: 25, close: 25 },
+                    { time: '2025-06-10', open: 25, high: 25, low: 25, close: 25 },
+                    { time: '2025-06-11', open: 25, high: 25, low: 25, close: 25 },
+                    { time: '2025-06-12', open: 25, high: 25, low: 25, close: 25 },
+                    { time: '2025-06-13', open: 25, high: 25, low: 25, close: 25 },
+                    { time: '2025-06-14', open: 25, high: 25, low: 25, close: 25 },
+                    { time: '2025-06-15', open: 25, high: 25, low: 25, close: 25 },
+                    { time: '2025-06-16', open: 25, high: 20, low: 20, close: 20 },
+                    { time: '2025-06-17', open: 20, high: 20, low: 15, close: 15 },
+                    { time: '2025-06-18', open: 15, high: 20, low: 15, close: 15 },
+                    { time: '2025-06-19', open: 15, high: 20, low: 15, close: 15 },
+                    { time: '2025-06-20', open: 15, high: 20, low: 15, close: 15 },
+                    { time: '2025-06-21', open: 15, high: 20, low: 15, close: 15 },
+                    { time: '2025-06-22', open: 15, high: 20, low: 15, close: 15 },
+                    { time: '2025-06-23', open: 15, high: 20, low: 15, close: 15 },
+                    { time: '2025-06-24', open: 15, high: 45, low: 40, close: 40 },
+                    { time: '2025-06-25', open: 40, high: 45, low: 40, close: 45 },
+                    { time: '2025-06-26', open: 45, high: 50, low: 45, close: 50 },
+                    { time: '2025-06-27', open: 50, high: 50, low: 50, close: 50 },
+                    { time: '2025-06-28', open: 50, high: 50, low: 50, close: 50 },
+                    { time: '2025-06-29', open: 50, high: 55, low: 50, close: 55 },
+                    { time: '2025-06-30', open: 55, high: 55, low: 55, close: 55 },
+                    { time: '2025-07-01', open: 55, high: 55, low: 55, close: 55 },
+                    { time: '2025-07-02', open: 55, high: 55, low: 55, close: 55 },
+                    { time: '2025-07-03', open: 55, high: 60, low: 55, close: 60 },
+                    { time: '2025-07-04', open: 60, high: 65, low: 60, close: 65 },
+                    { time: '2025-07-05', open: 65, high: 65, low: 65, close: 65 },
+                    { time: '2025-07-06', open: 65, high: 60, low: 60, close: 60 },
+                    { time: '2025-07-07', open: 60, high: 20, low: 60, close: 20 },
+                    { time: '2025-07-08', open: 20, high: 20, low: 20, close: 20 },
+                    { time: '2025-07-09', open: 20, high: 20, low: 20, close: 20 },
+                    { time: '2025-07-10', open: 20, high: 20, low: 20, close: 20 },
+                    { time: '2025-07-11', open: 20, high: 25, low: 20, close: 25 },
+                    { time: '2025-07-12', open: 25, high: 105, low: 100, close: 105 },
+                    { time: '2025-07-13', open: 105, high: 130, low: 100, close: 125 },
+                    
+
+                ];
+
+                candleSeries.setData(data);
+
+                // Ajustar tamaño al cambiar la ventana
+                window.addEventListener('resize', () => {
+                    chart.resize(chartContainer.clientWidth, 500);
+                });
+
+            } catch (error) {
+                console.error("Error al crear el gráfico:", error);
+            }
+        });
+    </script>
+
+</body>
+</html>
