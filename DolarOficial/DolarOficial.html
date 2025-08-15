@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="icon" href="https://pbs.twimg.com/profile_images/1628520220544335883/Y_USf6LP_400x400.png">
+    <title>Dólar Oficial - ARGANIA</title>
+
+    <!-- Cargar Lightweight Charts correctamente -->
+    <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.0.0/dist/lightweight-charts.standalone.production.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        #chartContainer {
+            width: 90%;
+            height: 500px;
+            margin: 20px auto;
+            border: 1px solid #444;
+            background-color: #1e1e1e;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>📊 Cotización en Vivo</h2>
+    <div id="chartContainer"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            try {
+                // Verificar si LightweightCharts está cargado
+                console.log("LightweightCharts:", LightweightCharts);
+
+                if (typeof LightweightCharts === "undefined") {
+                    throw new Error("Error: LightweightCharts no se ha cargado correctamente.");
+                }
+
+                // Crear gráfico
+                const chartContainer = document.getElementById('chartContainer');
+                const chart = LightweightCharts.createChart(chartContainer, {
+                    width: chartContainer.clientWidth,
+                    height: 500,
+                    layout: {
+                        backgroundColor: '#1e1e1e',
+                        textColor: 'white',
+                    },
+                    grid: {
+                        vertLines: { color: '#444' },
+                        horzLines: { color: '#444' },
+                    },
+                    timeScale: {
+                        timeVisible: true,
+                        secondsVisible: false,
+                    }
+                });
+
+                console.log(chart); // Verificar si el objeto se crea correctamente
+
+                // Agregar la serie de velas japonesas
+                const candleSeries = chart.addCandlestickSeries();
+
+                // Datos de prueba
+                const data = [
+                    { time: '2025-05-09', open: 320, high: 484.10, low: 400, close: 484.10 },
+                    { time: '2025-05-10', open: 484.10, high: 510, low: 390, close: 510 },
+                    { time: '2025-05-11', open: 510, high: 510, low: 510, close: 510 },
+                    { time: '2025-05-12', open: 510, high: 633, low: 510, close: 663 },
+                    { time: '2025-05-13', open: 663, high: 861.90, low: 659.10, close: 700 },
+                    { time: '2025-05-14', open: 700, high: 700, low: 700, close: 700 },
+                    { time: '2025-05-15', open: 700, high: 140.34, low: 136.19, close: 140.34 },
+                    { time: '2025-05-16', open: 140.34, high: 147.98, low: 144.18, close: 147.98 },
+                    { time: '2025-05-17', open: 147.98, high: 148.25, low: 133.15, close: 134.81 },
+                    { time: '2025-05-18', open: 134.81, high: 136.68, low: 102.78, close: 103.68 },
+                    { time: '2025-05-19', open: 103.68, high: 32.74, low: 21.63, close: 21.60 },
+                    { time: '2025-05-20', open: 21.60, high: 280, low: 18.67, close: 280 },
+                    { time: '2025-05-21', open: 280, high: 280, low: 280, close: 280 },
+                    { time: '2025-05-22', open: 280, high: 280, low: 280, close: 280 },
+                    { time: '2025-05-23', open: 280, high: 280, low: 280, close: 280 },
+                    { time: '2025-05-24', open: 280, high: 280, low: 280, close: 280 },
+                    { time: '2025-05-25', open: 280, high: 40.25, low: 36.23, close: 36.23 },
+                    { time: '2025-05-26', open: 36.23, high: 35.91, low: 26.07, close: 26.07 },
+                    { time: '2025-05-27', open: 26.07, high: 28.03, low: 27.14, close: 28.03 },
+                    { time: '2025-05-28', open: 28.03, high: 31.11, low: 27.14, close: 27.38 },
+                    { time: '2025-05-29', open: 27.38, high: 27.82, low: 26.30, close: 26.30 },
+                    { time: '2025-05-30', open: 26.30, high: 44.92, low: 36.65, close: 36.65 },
+                    { time: '2025-05-31', open: 36.65, high: 39.67, low: 39.67, close: 39.67 },
+                    { time: '2025-06-01', open: 39.67, high: 40, low: 38, close: 38 },
+                    { time: '2025-06-02', open: 38, high: 36, low: 36, close: 36 },
+                    { time: '2025-06-03', open: 36, high: 38, low: 36, close: 38 },
+                    { time: '2025-06-04', open: 38, high: 38, low: 36, close: 36 },
+                    { time: '2025-06-05', open: 36, high: 36, low: 36, close: 36 },
+                    { time: '2025-06-06', open: 36, high: 38, low: 36, close: 38 },
+                    { time: '2025-06-07', open: 38, high: 36, low: 36, close: 36 },
+                    { time: '2025-06-08', open: 36, high: 36, low: 36, close: 36 },
+                    { time: '2025-06-09', open: 36, high: 36, low: 36, close: 36 },
+                    { time: '2025-06-10', open: 36, high: 36, low: 36, close: 36 },
+                    { time: '2025-06-11', open: 36, high: 36, low: 36, close: 36 },
+                    { time: '2025-06-12', open: 36, high: 38, low: 38, close: 38 },
+                    { time: '2025-06-13', open: 38, high: 38, low: 38, close: 38 },
+                    { time: '2025-06-14', open: 38, high: 38, low: 38, close: 38 },
+                    { time: '2025-06-15', open: 38, high: 38, low: 38, close: 38 },
+                    { time: '2025-06-16', open: 38, high: 36, low: 36, close: 36 },
+                    { time: '2025-06-17', open: 36, high: 36, low: 36, close: 36 },
+                    { time: '2025-06-18', open: 36, high: 36, low: 36, close: 36 },
+                    { time: '2025-06-19', open: 36, high: 36, low: 36, close: 36 },
+                    { time: '2025-06-20', open: 36, high: 36, low: 36, close: 36 },
+                    { time: '2025-06-21', open: 36, high: 36, low: 36, close: 36 },
+                    { time: '2025-06-22', open: 36, high: 36, low: 36, close: 36 },
+                    { time: '2025-06-23', open: 36, high: 36, low: 36, close: 36 },
+                    { time: '2025-06-24', open: 36, high: 36, low: 36, close: 38 },
+                    { time: '2025-06-25', open: 38, high: 38, low: 38, close: 38 },
+                    { time: '2025-06-26', open: 38, high: 36, low: 36, close: 36 },
+                    { time: '2025-06-27', open: 36, high: 36, low: 36, close: 36 },
+                    { time: '2025-06-28', open: 36, high: 36, low: 36, close: 36 },
+                    { time: '2025-06-29', open: 36, high: 36, low: 36, close: 36 },
+                    { time: '2025-06-30', open: 36, high: 36, low: 36, close: 36 },
+                    { time: '2025-07-01', open: 36, high: 36, low: 36, close: 36 },
+                    { time: '2025-07-02', open: 36, high: 38, low: 38, close: 38 },
+                    { time: '2025-07-03', open: 38, high: 38, low: 38, close: 38 },
+                    { time: '2025-07-04', open: 38, high: 40, low: 40, close: 40 },
+                    { time: '2025-07-05', open: 40, high: 40, low: 40, close: 40 },
+                    { time: '2025-07-06', open: 40, high: 38, low: 38, close: 38 },
+                    { time: '2025-07-07', open: 38, high: 38, low: 19.31, close: 19.31 },
+                    { time: '2025-07-08', open: 19.31, high: 18.85, low: 18.85, close: 18.85 },
+                    { time: '2025-07-09', open: 18.85, high: 14.64, low: 14.64, close: 14.64 },
+                    { time: '2025-07-10', open: 14.64, high: 15, low: 14.95, close: 14.95 },
+                    { time: '2025-07-11', open: 14.95, high: 52.15, low: 14.95, close: 52.15 },
+                    { time: '2025-07-12', open: 52.15, high: 52.15, low: 75.43, close: 75.43 },
+                    { time: '2025-07-13', open: 75.43, high: 128, low: 75.43, close: 127.52 }
+                    
+
+                ];
+
+                candleSeries.setData(data);
+
+                // Ajustar tamaño al cambiar la ventana
+                window.addEventListener('resize', () => {
+                    chart.resize(chartContainer.clientWidth, 500);
+                });
+
+            } catch (error) {
+                console.error("Error al crear el gráfico:", error);
+            }
+        });
+    </script>
+
+</body>
+</html>
