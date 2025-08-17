@@ -1,0 +1,33 @@
+<div id="resultado"></div>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script>
+  async function cargarExcel() {
+    // 👇 tu link de descarga directa de OneDrive
+    let url = "https://onedrive.live.com/download?resid=50D006ED9AE7C0DC!s96b99c7b9ca84dfdb6aa81509cf5961a&migratedtospo=true&redeem=aHR0cHM6Ly8xZHJ2Lm1zL3gvYy81MGQwMDZlZDlhZTdjMGRjL0lRUjduTG1XcUp6OVRiYXFnVkNjOVpZYUFjVnQxQ3Iwei1qbFR5MWhlWHZ3czFV"; 
+    
+    let resp = await fetch(url);
+    let data = await resp.arrayBuffer();
+    let workbook = XLSX.read(data, { type: "array" });
+
+    // 📌 Seleccionar hoja "Divisas"
+    let worksheet = workbook.Sheets["Divisas"];
+    if (!worksheet) {
+      document.getElementById("resultado").innerText = "❌ No existe la hoja 'Divisas'";
+      return;
+    }
+
+    // Convertir a matriz (arrays de filas y columnas)
+    let json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+    // 📌 Obtener última fila
+    let ultimaFila = json[json.length - 1];
+
+    // 📌 Columna H = índice 7 (porque empieza desde 0)
+    let ultimaCelda = ultimaFila[7];
+
+    document.getElementById("resultado").innerText =
+      "Tipo de cambio (última fila H): " + ultimaCelda;
+  }
+
+  cargarExcel();
+</script>
