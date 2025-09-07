@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Cotizaciones Lightweight Charts</title>
-  <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
   <style>
     body {
       background: #111;
@@ -24,70 +23,63 @@
   <h2>📈 Cotizaciones Nov 2024 - Sep 2025</h2>
   <div id="chart"></div>
 
-  <!-- Cargamos los datos desde el archivo externo -->
-  <script src="seriesData.js"></script>
+  <!-- Script como módulo -->
+  <script type="module">
+    import { createChart } from 'https://unpkg.com/lightweight-charts/dist/lightweight-charts.esm.production.js';
+    import { seriesData } from './seriesData.js'; // tu archivo de datos
 
-  <script>
-    // Esperamos a que todo esté cargado
-    window.onload = function() {
-      if (!window.LightweightCharts) {
-        console.error("LightweightCharts no se cargó correctamente.");
+    // Crear el gráfico
+    const chart = createChart(document.getElementById('chart'), {
+      layout: {
+        background: { color: '#111' },
+        textColor: '#fff',
+      },
+      grid: {
+        vertLines: { color: 'rgba(255,255,255,0.1)' },
+        horzLines: { color: 'rgba(255,255,255,0.1)' },
+      },
+      timeScale: {
+        borderColor: '#71649C',
+        timeVisible: true,
+        secondsVisible: false,
+      },
+    });
+
+    const lineSeries = chart.addLineSeries({
+      color: '#e60073',
+      lineWidth: 2,
+    });
+
+    lineSeries.setData(seriesData);
+
+    // Tooltip flotante
+    const toolTip = document.createElement('div');
+    toolTip.style = `
+      position: absolute;
+      display: none;
+      background: #222;
+      border: 1px solid #e60073;
+      border-radius: 5px;
+      padding: 5px 10px;
+      color: #fff;
+      font-size: 12px;
+      pointer-events: none;
+    `;
+    document.body.appendChild(toolTip);
+
+    chart.subscribeCrosshairMove(param => {
+      if (!param.point || !param.time) {
+        toolTip.style.display = 'none';
         return;
       }
-
-      // Crear el gráfico
-      const chart = LightweightCharts.createChart(document.getElementById('chart'), {
-        layout: {
-          background: { color: '#111' },
-          textColor: '#fff',
-        },
-        grid: {
-          vertLines: { color: 'rgba(255,255,255,0.1)' },
-          horzLines: { color: 'rgba(255,255,255,0.1)' },
-        },
-        timeScale: {
-          borderColor: '#71649C',
-          timeVisible: true,
-          secondsVisible: false,
-        },
-      });
-
-      const lineSeries = chart.addLineSeries({
-        color: '#e60073',
-        lineWidth: 2,
-      });
-
-      lineSeries.setData(seriesData);
-
-      // Tooltip flotante
-      const toolTip = document.createElement('div');
-      toolTip.style = `
-        position: absolute;
-        display: none;
-        background: #222;
-        border: 1px solid #e60073;
-        border-radius: 5px;
-        padding: 5px 10px;
-        color: #fff;
-        font-size: 12px;
-        pointer-events: none;
-      `;
-      document.body.appendChild(toolTip);
-
-      chart.subscribeCrosshairMove(param => {
-        if (!param.point || !param.time) {
-          toolTip.style.display = 'none';
-          return;
-        }
-        const price = param.seriesData.get(lineSeries)?.value;
-        if (price) {
-          toolTip.innerHTML = `${param.time}<br>💲 ${price}`;
-          toolTip.style.display = 'block';
-          toolTip.style.left = param.point.x + 50 + "px";
-          toolTip.style.top = param.point.y + 50 + "px";
-        }
-      });
-    };
+      const price = param.seriesData.get(lineSeries)?.value;
+      if (price) {
+        toolTip.innerHTML = `${param.time}<br>💲 ${price}`;
+        toolTip.style.display = 'block';
+        toolTip.style.left = param.point.x + 50 + "px";
+        toolTip.style.top = param.point.y + 50 + "px";
+      }
+    });
   </script>
 </body>
 </html>
