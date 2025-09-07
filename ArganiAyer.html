@@ -34,6 +34,18 @@
     timeScale: { timeVisible: true, secondsVisible: false },
   });
 
+  const lineSeries = chart.addLineSeries({
+    color: '#e60073', // línea rosa
+    lineWidth: 2,
+    priceLineVisible: false,
+});
+
+  lineSeries.applyOptions({
+    topColor: 'rgba(230,0,115,0.4)',   // rosa transparente arriba
+    bottomColor: 'rgba(17,17,17,0.2)', // fondo oscuro transparente abajo
+});
+  lineSeries.setData(seriesData);
+
 </script>
 
 </body>
