@@ -34,14 +34,6 @@
     timeScale: { timeVisible: true, secondsVisible: false },
   });
 
-  const chartContainer = document.getElementById('chart');
-chart.resize(chartContainer.clientWidth, chartContainer.clientHeight);
-
-// Ajuste automático al cambiar el tamaño de la ventana
-window.addEventListener('resize', () => {
-    chart.resize(chartContainer.clientWidth, chartContainer.clientHeight);
-});
-
 </script>
 
 </body>
