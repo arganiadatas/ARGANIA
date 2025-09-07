@@ -1,4 +1,4 @@
-/*!
+/*! d
  * @license
  * TradingView Lightweight Charts™ v5.0.8
  * Copyright (c) 2025 TradingView, Inc.
