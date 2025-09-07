@@ -2,8 +2,9 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Gráfico Dólar Blue</title>
+  <title>Gráfico con Zoom y Pan</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
   <style>
     body {
       background: #111;
@@ -19,23 +20,16 @@
   </style>
 </head>
 <body>
-  <h2>📈 Cotización Dólar Blue</h2>
+  <h2>📈 Cotización Dólar Blue (Zoom + Pan)</h2>
   <div id="chartContainer">
     <canvas id="blueChart"></canvas>
   </div>
 
   <script>
-    // Datos personalizados (ejemplo)
     const labels = [
-      "2020-11-13",
-      "2021-01-10",
-      "2021-06-15",
-      "2022-01-05",
-      "2023-03-20",
-      "2024-07-12",
-      "2025-09-07"
+      "2020-11-13","2021-01-10","2021-06-15",
+      "2022-01-05","2023-03-20","2024-07-12","2025-09-07"
     ];
-
     const data = {
       labels: labels,
       datasets: [{
@@ -43,9 +37,9 @@
         data: [172, 155, 180, 210, 450, 1500, 1365],
         borderColor: "#e60073",
         backgroundColor: "rgba(230,0,115,0.2)",
-        tension: 0.2, // suavizado de la curva
+        tension: 0.2,
         fill: true,
-        pointRadius: 4,
+        pointRadius: 3,
         pointHoverRadius: 6
       }]
     };
@@ -56,14 +50,23 @@
       options: {
         responsive: true,
         plugins: {
-          legend: {
-            display: false
-          },
+          legend: { display: false },
           tooltip: {
             callbacks: {
               label: function(context) {
                 return " $" + context.formattedValue;
               }
+            }
+          },
+          zoom: {
+            zoom: {
+              wheel: { enabled: true },   // Zoom con rueda del mouse
+              pinch: { enabled: true },   // Zoom en pantallas táctiles
+              mode: "x"                   // Solo horizontal
+            },
+            pan: {
+              enabled: true,
+              mode: "x"                   // Moverse en horizontal
             }
           }
         },
@@ -80,10 +83,7 @@
       }
     };
 
-    new Chart(
-      document.getElementById("blueChart"),
-      config
-    );
+    new Chart(document.getElementById("blueChart"), config);
   </script>
 </body>
 </html>
