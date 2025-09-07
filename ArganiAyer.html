@@ -16,6 +16,7 @@
       width: 95%;
       height: 600px;
       margin: auto;
+      position: relative;
     }
   </style>
 </head>
@@ -27,58 +28,66 @@
   <script src="seriesData.js"></script>
 
   <script>
-    // Crear el gráfico
-    const chart = LightweightCharts.createChart(document.getElementById('chart'), {
-      layout: {
-        background: { color: '#111' },
-        textColor: '#fff',
-      },
-      grid: {
-        vertLines: { color: 'rgba(255,255,255,0.1)' },
-        horzLines: { color: 'rgba(255,255,255,0.1)' },
-      },
-      timeScale: {
-        borderColor: '#71649C',
-        timeVisible: true,
-        secondsVisible: false,
-      },
-    });
-
-    const lineSeries = chart.addLineSeries({
-      color: '#e60073',
-      lineWidth: 2,
-    });
-
-    lineSeries.setData(seriesData);
-
-    // Tooltip flotante
-    const toolTip = document.createElement('div');
-    toolTip.style = `
-      position: absolute;
-      display: none;
-      background: #222;
-      border: 1px solid #e60073;
-      border-radius: 5px;
-      padding: 5px 10px;
-      color: #fff;
-      font-size: 12px;
-      pointer-events: none;
-    `;
-    document.body.appendChild(toolTip);
-
-    chart.subscribeCrosshairMove(param => {
-      if (!param.point || !param.time) {
-        toolTip.style.display = 'none';
+    // Esperamos a que todo esté cargado
+    window.onload = function() {
+      if (!window.LightweightCharts) {
+        console.error("LightweightCharts no se cargó correctamente.");
         return;
       }
-      const price = param.seriesData.get(lineSeries)?.value;
-      if (price) {
-        toolTip.innerHTML = `${param.time}<br>💲 ${price}`;
-        toolTip.style.display = 'block';
-        toolTip.style.left = param.point.x + 50 + "px";
-        toolTip.style.top = param.point.y + 50 + "px";
-      }
-    });
+
+      // Crear el gráfico
+      const chart = LightweightCharts.createChart(document.getElementById('chart'), {
+        layout: {
+          background: { color: '#111' },
+          textColor: '#fff',
+        },
+        grid: {
+          vertLines: { color: 'rgba(255,255,255,0.1)' },
+          horzLines: { color: 'rgba(255,255,255,0.1)' },
+        },
+        timeScale: {
+          borderColor: '#71649C',
+          timeVisible: true,
+          secondsVisible: false,
+        },
+      });
+
+      const lineSeries = chart.addLineSeries({
+        color: '#e60073',
+        lineWidth: 2,
+      });
+
+      lineSeries.setData(seriesData);
+
+      // Tooltip flotante
+      const toolTip = document.createElement('div');
+      toolTip.style = `
+        position: absolute;
+        display: none;
+        background: #222;
+        border: 1px solid #e60073;
+        border-radius: 5px;
+        padding: 5px 10px;
+        color: #fff;
+        font-size: 12px;
+        pointer-events: none;
+      `;
+      document.body.appendChild(toolTip);
+
+      chart.subscribeCrosshairMove(param => {
+        if (!param.point || !param.time) {
+          toolTip.style.display = 'none';
+          return;
+        }
+        const price = param.seriesData.get(lineSeries)?.value;
+        if (price) {
+          toolTip.innerHTML = `${param.time}<br>💲 ${price}`;
+          toolTip.style.display = 'block';
+          toolTip.style.left = param.point.x + 50 + "px";
+          toolTip.style.top = param.point.y + 50 + "px";
+        }
+      });
+    };
   </script>
 </body>
 </html>
