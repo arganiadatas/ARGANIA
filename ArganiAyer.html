@@ -1,33 +1,89 @@
-<div id="resultado"></div>
-<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
-<script>
-  async function cargarExcel() {
-    // 👇 tu link de descarga directa de OneDrive
-    let url = "https://onedrive.live.com/download?resid=50D006ED9AE7C0DC!s96b99c7b9ca84dfdb6aa81509cf5961a&migratedtospo=true&redeem=aHR0cHM6Ly8xZHJ2Lm1zL3gvYy81MGQwMDZlZDlhZTdjMGRjL0lRUjduTG1XcUp6OVRiYXFnVkNjOVpZYUFjVnQxQ3Iwei1qbFR5MWhlWHZ3czFV"; 
-    
-    let resp = await fetch(url);
-    let data = await resp.arrayBuffer();
-    let workbook = XLSX.read(data, { type: "array" });
-
-    // 📌 Seleccionar hoja "Divisas"
-    let worksheet = workbook.Sheets["Divisas"];
-    if (!worksheet) {
-      document.getElementById("resultado").innerText = "❌ No existe la hoja 'Divisas'";
-      return;
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gráfico Dólar Blue</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      background: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
     }
+    #chartContainer {
+      width: 80%;
+      margin: auto;
+    }
+  </style>
+</head>
+<body>
+  <h2>📈 Cotización Dólar Blue</h2>
+  <div id="chartContainer">
+    <canvas id="blueChart"></canvas>
+  </div>
 
-    // Convertir a matriz (arrays de filas y columnas)
-    let json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+  <script>
+    // Datos personalizados (ejemplo)
+    const labels = [
+      "2020-11-13",
+      "2021-01-10",
+      "2021-06-15",
+      "2022-01-05",
+      "2023-03-20",
+      "2024-07-12",
+      "2025-09-07"
+    ];
 
-    // 📌 Obtener última fila
-    let ultimaFila = json[json.length - 1];
+    const data = {
+      labels: labels,
+      datasets: [{
+        label: "Dólar Blue",
+        data: [172, 155, 180, 210, 450, 1500, 1365],
+        borderColor: "#e60073",
+        backgroundColor: "rgba(230,0,115,0.2)",
+        tension: 0.2, // suavizado de la curva
+        fill: true,
+        pointRadius: 4,
+        pointHoverRadius: 6
+      }]
+    };
 
-    // 📌 Columna H = índice 7 (porque empieza desde 0)
-    let ultimaCelda = ultimaFila[7];
+    const config = {
+      type: "line",
+      data: data,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return " $" + context.formattedValue;
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: "#fff" },
+            grid: { color: "rgba(255,255,255,0.1)" }
+          },
+          y: {
+            ticks: { color: "#fff" },
+            grid: { color: "rgba(255,255,255,0.1)" }
+          }
+        }
+      }
+    };
 
-    document.getElementById("resultado").innerText =
-      "Tipo de cambio (última fila H): " + ultimaCelda;
-  }
-
-  cargarExcel();
-</script>
+    new Chart(
+      document.getElementById("blueChart"),
+      config
+    );
+  </script>
+</body>
+</html>
