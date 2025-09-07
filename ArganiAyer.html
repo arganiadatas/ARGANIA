@@ -24,55 +24,19 @@
   <div id="chart"></div>
 
   <!-- Scripts locales al final -->
-  <script src="lightweight-charts.standalone.production.js"></script>
-  <script src="seriesData.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.0.0/dist/lightweight-charts.standalone.production.js"></script>
+<script src="seriesData.js"></script>
 
-  <script>
-    // Crear el gráfico **directamente al final del body**
-    if (!window.LightweightCharts) {
-      console.error("LightweightCharts no se cargó correctamente.");
-    } else {
-      const chart = LightweightCharts.createChart(document.getElementById('chart'), {
-        layout: { background: { color: '#111' }, textColor: '#fff' },
-        grid: {
-          vertLines: { color: 'rgba(255,255,255,0.1)' },
-          horzLines: { color: 'rgba(255,255,255,0.1)' },
-        },
-        timeScale: { borderColor: '#71649C', timeVisible: true, secondsVisible: false },
-      });
+<script>
+  const chart = LightweightCharts.createChart(document.getElementById('chart'), {
+    layout: { background: { color: '#111' }, textColor: '#fff' },
+    grid: { vertLines: { color: 'rgba(255,255,255,0.1)' }, horzLines: { color: 'rgba(255,255,255,0.1)' } },
+    timeScale: { timeVisible: true, secondsVisible: false },
+  });
 
-      const lineSeries = chart.addLineSeries({ color: '#e60073', lineWidth: 2 });
-      lineSeries.setData(seriesData);
+  const lineSeries = chart.addLineSeries({ color: '#e60073', lineWidth: 2 });
+  lineSeries.setData(seriesData);
+</script>
 
-      // Tooltip flotante
-      const toolTip = document.createElement('div');
-      toolTip.style = `
-        position: absolute;
-        display: none;
-        background: #222;
-        border: 1px solid #e60073;
-        border-radius: 5px;
-        padding: 5px 10px;
-        color: #fff;
-        font-size: 12px;
-        pointer-events: none;
-      `;
-      document.body.appendChild(toolTip);
-
-      chart.subscribeCrosshairMove(param => {
-        if (!param.point || !param.time) {
-          toolTip.style.display = 'none';
-          return;
-        }
-        const price = param.seriesData.get(lineSeries)?.value;
-        if (price) {
-          toolTip.innerHTML = `${param.time}<br>💲 ${price}`;
-          toolTip.style.display = 'block';
-          toolTip.style.left = param.point.x + 50 + "px";
-          toolTip.style.top = param.point.y + 50 + "px";
-        }
-      });
-    }
-  </script>
 </body>
 </html>
