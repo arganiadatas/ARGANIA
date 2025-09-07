@@ -3,8 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Cotizaciones Lightweight Charts</title>
-  <!-- Standalone UMD, funciona sin CORS -->
-  <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
   <style>
     body {
       background: #111;
@@ -25,42 +23,29 @@
   <h2>📈 Cotizaciones Nov 2024 - Sep 2025</h2>
   <div id="chart"></div>
 
-  <!-- Datos -->
-  <script src="seriesData.js"></script>
+  <!-- Scripts locales -->
+  <script src="./lightweight-charts.standalone.production.js"></script>
+  <script src="./seriesData.js"></script>
 
   <script>
-    // Esperar a que todo esté cargado
     window.onload = function() {
       if (!window.LightweightCharts) {
         console.error("LightweightCharts no se cargó correctamente.");
         return;
       }
 
-      // Crear el gráfico
       const chart = LightweightCharts.createChart(document.getElementById('chart'), {
-        layout: {
-          background: { color: '#111' },
-          textColor: '#fff',
-        },
+        layout: { background: { color: '#111' }, textColor: '#fff' },
         grid: {
           vertLines: { color: 'rgba(255,255,255,0.1)' },
           horzLines: { color: 'rgba(255,255,255,0.1)' },
         },
-        timeScale: {
-          borderColor: '#71649C',
-          timeVisible: true,
-          secondsVisible: false,
-        },
+        timeScale: { borderColor: '#71649C', timeVisible: true, secondsVisible: false },
       });
 
-      const lineSeries = chart.addLineSeries({
-        color: '#e60073',
-        lineWidth: 2,
-      });
-
+      const lineSeries = chart.addLineSeries({ color: '#e60073', lineWidth: 2 });
       lineSeries.setData(seriesData);
 
-      // Tooltip flotante
       const toolTip = document.createElement('div');
       toolTip.style = `
         position: absolute;
