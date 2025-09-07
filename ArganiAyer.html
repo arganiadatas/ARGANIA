@@ -23,17 +23,15 @@
   <h2>📈 Cotizaciones Nov 2024 - Sep 2025</h2>
   <div id="chart"></div>
 
-  <!-- Scripts locales -->
+  <!-- Scripts locales al final -->
   <script src="lightweight-charts.standalone.production.js"></script>
   <script src="seriesData.js"></script>
 
   <script>
-    window.onload = function() {
-      if (!window.LightweightCharts) {
-        console.error("LightweightCharts no se cargó correctamente.");
-        return;
-      }
-
+    // Crear el gráfico **directamente al final del body**
+    if (!window.LightweightCharts) {
+      console.error("LightweightCharts no se cargó correctamente.");
+    } else {
       const chart = LightweightCharts.createChart(document.getElementById('chart'), {
         layout: { background: { color: '#111' }, textColor: '#fff' },
         grid: {
@@ -46,6 +44,7 @@
       const lineSeries = chart.addLineSeries({ color: '#e60073', lineWidth: 2 });
       lineSeries.setData(seriesData);
 
+      // Tooltip flotante
       const toolTip = document.createElement('div');
       toolTip.style = `
         position: absolute;
@@ -73,7 +72,7 @@
           toolTip.style.top = param.point.y + 50 + "px";
         }
       });
-    };
+    }
   </script>
 </body>
 </html>
