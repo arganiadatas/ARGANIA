@@ -23,28 +23,10 @@
   <h2>📈 Cotizaciones Nov 2024 - Sep 2025</h2>
   <div id="chart"></div>
 
+  <!-- Cargamos los datos desde el archivo externo -->
+  <script src="seriesData.js"></script>
+
   <script>
-    // Cotizaciones (pegá TODAS acá)
-    const cotizaciones = [
-      5.00,15.00,39.50,34.51,29.52,24.53,19.53,14.53,9.53,9.03,
-      // ... sigue con todas las que me pasaste ...
-      42.50,42.61,42.64
-    ];
-
-    // Fechas (pegá TODAS acá)
-    const fechas = [
-      "2024-11-25","2024-11-26","2024-11-27","2024-11-28","2024-11-29",
-      "2024-11-30","2024-12-01","2024-12-02",
-      // ... sigue hasta ...
-      "2025-09-07"
-    ];
-
-    // Convertimos en formato { time, value }
-    const seriesData = fechas.map((f, i) => ({
-      time: f,
-      value: cotizaciones[i]
-    }));
-
     // Crear el gráfico
     const chart = LightweightCharts.createChart(document.getElementById('chart'), {
       layout: {
