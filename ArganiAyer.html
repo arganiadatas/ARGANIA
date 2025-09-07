@@ -71,15 +71,18 @@
     const data = {
       labels: labels,
       datasets: [{
-        label: "Cotización",
-        data: cotizaciones,
-        borderColor: "#e60073",
-        backgroundColor: "rgba(230,0,115,0.2)",
-        tension: 0.2,
-        fill: true,
-        pointRadius: 0,   // no dibuja todos los puntos (mejor rendimiento)
-        pointHoverRadius: 5
-      }]
+  label: "Cotización",
+  data: cotizaciones,
+  borderColor: "#e60073",
+  backgroundColor: "rgba(230,0,115,0.2)",
+  tension: 0.2,
+  fill: true,
+  pointRadius: 0,          // no dibuja puntos fijos
+  pointHoverRadius: 6,     // sí aparece el punto al pasar el mouse
+  pointHoverBackgroundColor: "#fff",
+  pointHoverBorderColor: "#e60073",
+  pointHoverBorderWidth: 2
+}]
     };
 
     const config = {
