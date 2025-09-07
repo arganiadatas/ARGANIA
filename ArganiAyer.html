@@ -34,8 +34,29 @@
     timeScale: { timeVisible: true, secondsVisible: false },
   });
 
+  const chartContainer = document.getElementById('chart');
+chart.resize(chartContainer.clientWidth, chartContainer.clientHeight);
+
+// Ajuste automático al cambiar el tamaño de la ventana
+window.addEventListener('resize', () => {
+    chart.resize(chartContainer.clientWidth, chartContainer.clientHeight);
+});
+
   const lineSeries = chart.addLineSeries({ color: '#e60073', lineWidth: 2 });
   lineSeries.setData(seriesData);
+
+  const lineSeries = chart.addLineSeries({
+    color: '#e60073', // línea rosa
+    lineWidth: 2,
+    priceLineVisible: false,
+});
+
+// Área debajo de la línea (degradado)
+lineSeries.applyOptions({
+    topColor: 'rgba(230,0,115,0.4)',   // rosa transparente arriba
+    bottomColor: 'rgba(17,17,17,0.2)', // fondo oscuro transparente abajo
+});
+
 </script>
 
 </body>
