@@ -1,4 +1,4 @@
-const seriesData = [
+const aprobacion = [
   {
     "time": "2024-08-02",
     "value": 86.0
