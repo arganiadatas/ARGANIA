@@ -278,27 +278,34 @@ function loop(now){
   });
 
   // simple collision response (repel) to avoid overlap
-  for(let i=0;i<avatars.length;i++){
-    for(let j=i+1;j<avatars.length;j++){
-      const a = avatars[i], b = avatars[j];
-      if(!a.alive || !b.alive) continue;
-      const dx = b.x - a.x, dy = b.y - a.y;
-      const d = Math.hypot(dx,dy);
-      const minDist = a.r + b.r;
-      if(d < minDist && d > 0){
-        const overlap = (minDist - d) * 0.5;
-        const nx = dx/d, ny = dy/d;
-        b.x += nx * overlap;
-        b.y += ny * overlap;
-        a.x -= nx * overlap;
-        a.y -= ny * overlap;
-        // exchange small velocities
-        const vx = (a.vx + b.vx)/2, vy = (a.vy + b.vy)/2;
-        a.vx = vx; a.vy = vy;
-        b.vx = -vx*0.8; b.vy = -vy*0.8;
-      }
+ // simple collision response: en vez de solo repeler, eliminamos a uno
+for (let i = 0; i < avatars.length; i++) {
+  for (let j = i + 1; j < avatars.length; j++) {
+    const a = avatars[i], b = avatars[j];
+    if (!a.alive || !b.alive) continue;
+
+    const dx = b.x - a.x, dy = b.y - a.y;
+    const d = Math.hypot(dx, dy);
+    const minDist = a.r + b.r;
+
+    if (d < minDist && d > 0) {
+      // 👇 nueva lógica: al chocar, uno muere
+      let loser;
+      // opción 1: muere el más chico
+      if (a.r < b.r) loser = a;
+      else if (b.r < a.r) loser = b;
+      else loser = Math.random() < 0.5 ? a : b; // si son iguales, al azar
+
+      loser.alive = false;
+      loser.eliminatedAt = now;
+
+      aliveLabel.textContent = avatars.filter(av => av.alive).length;
+      day += 1;
+      dayLabel.textContent = day;
     }
   }
+}
+
 
   // draw avatars
   avatars.forEach(av=>{
