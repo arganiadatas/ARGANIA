@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Followers Battle Royale (Canvas)</title>
+<style>
+  :root{ --bg:#0b0b0f; --panel:#0f1720; --accent:#16a34a; --muted:#9aa4b2; }
+  body{ margin:0; font-family:Inter,system-ui,Segoe UI,Roboto,Arial; background:linear-gradient(180deg,#05060a 0%,#0b0b0f 100%); color:#e6eef6;}
+  .wrap{display:flex;gap:16px;padding:18px;box-sizing:border-box;height:100vh;}
+  .left{width:340px; background:rgba(255,255,255,0.03); border-radius:10px;padding:14px; box-shadow:0 6px 20px rgba(0,0,0,0.6);}
+  h1{font-size:18px;margin:0 0 8px;}
+  label{display:block;font-size:12px;color:var(--muted);margin-top:8px;}
+  input[type="range"]{width:100%}
+  button{background:var(--accent); color:white;border:none;padding:8px 12px;border-radius:8px;cursor:pointer;margin-top:8px;}
+  button.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);}
+  textarea{width:100%;height:80px;background:transparent;color:inherit;border:1px dashed rgba(255,255,255,0.06);padding:8px;border-radius:6px;}
+  .stats{margin-top:12px;font-size:14px;color:var(--muted);}
+  canvas{flex:1;background:linear-gradient(180deg,#020203,#07070a);border-radius:12px;display:block;}
+  .topbar{position:absolute;left:380px;top:28px;color:white;font-weight:600;font-size:18px;}
+  .small{font-size:12px;color:var(--muted)}
+  .controls-row{display:flex;gap:8px;align-items:center;margin-top:8px}
+  footer{position:absolute;right:22px;bottom:18px;color:var(--muted);font-size:12px}
+  .badge{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.03);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="left">
+    <h1>Followers Battle Royale</h1>
+    <div class="small">Subí los avatares de tus seguidores o pega URLs (una por línea).</div>
+
+    <label>Elegir imágenes (múltiples)</label>
+    <input id="files" type="file" accept="image/*" multiple style="width:100%">
+
+    <label>Pegar URLs (una por línea)</label>
+    <textarea id="urls" placeholder="https://.../avatar1.jpg&#10;https://.../avatar2.jpg"></textarea>
+    <div class="controls-row">
+      <button id="load" class="secondary">Cargar</button>
+      <button id="use-sample">Cargar de muestra (10)</button>
+    </div>
+
+    <label>Intervalo de eliminación (segundos): <span id="interval-label">2.0</span></label>
+    <input id="interval" type="range" min="0.5" max="6" step="0.1" value="2">
+
+    <label>Velocidad (movimiento): <span id="speed-label">1.0</span></label>
+    <input id="speed" type="range" min="0.2" max="3" step="0.1" value="1">
+
+    <div class="controls-row">
+      <button id="start">Iniciar</button>
+      <button id="pause" class="secondary">Pausa</button>
+      <button id="reset" class="secondary">Reset</button>
+    </div>
+
+    <div class="stats">
+      <div>Alive: <span id="alive">0</span></div>
+      <div>Day <span id="day">1</span>: <span id="followers-count">0</span> followers</div>
+      <div style="margin-top:8px"><span class="badge">Consejo</span> Presioná <strong>Espacio</strong> para pausar/reanudar.</div>
+    </div>
+  </div>
+
+  <canvas id="c"></canvas>
+</div>
+
+<div class="topbar" id="topbar">Follow to enter</div>
+<footer>Reel-style simulator · Guardá como HTML y abrilo en tu navegador</footer>
+
+<script>
+/*
+  Followers Battle Royale
+  - Subí imagenes o pegá URLs
+  - Cada intervalo se elimina 1 avatar al azar hasta quedar 1 ganador
+  - Hecho con HTML5 Canvas, sin librerías externas
+*/
+
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resize(){ W = canvas.width = window.innerWidth - 420; H = canvas.height = window.innerHeight - 40; }
+window.addEventListener('resize', resize);
+resize();
+
+// UI
+const filesInput = document.getElementById('files');
+const urlsArea = document.getElementById('urls');
+const loadBtn = document.getElementById('load');
+const sampleBtn = document.getElementById('use-sample');
+const startBtn = document.getElementById('start');
+const pauseBtn = document.getElementById('pause');
+const resetBtn = document.getElementById('reset');
+const intervalSlider = document.getElementById('interval');
+const speedSlider = document.getElementById('speed');
+const intervalLabel = document.getElementById('interval-label');
+const speedLabel = document.getElementById('speed-label');
+const aliveLabel = document.getElementById('alive');
+const dayLabel = document.getElementById('day');
+const followersCountLabel = document.getElementById('followers-count');
+
+intervalSlider.addEventListener('input', ()=> intervalLabel.textContent = parseFloat(intervalSlider.value).toFixed(1));
+speedSlider.addEventListener('input', ()=> speedLabel.textContent = parseFloat(speedSlider.value).toFixed(1));
+
+let avatars = []; // {img, x,y, vx,vy, r, alive, shrink}
+let running = false;
+let lastElimTime = 0;
+let elimInterval = parseFloat(intervalSlider.value) * 1000;
+let speedFactor = parseFloat(speedSlider.value);
+let day = 1;
+
+intervalSlider.addEventListener('change', ()=> { elimInterval = parseFloat(intervalSlider.value) * 1000; });
+speedSlider.addEventListener('change', ()=> { speedFactor = parseFloat(speedSlider.value); });
+
+function loadImagesFromFiles(files){
+  const imgs = Array.from(files);
+  return Promise.all(imgs.map(f => new Promise((res,rej)=>{
+    const url = URL.createObjectURL(f);
+    const img = new Image();
+    img.onload = ()=> { URL.revokeObjectURL(url); res(img); };
+    img.onerror = rej;
+    img.src = url;
+  })));
+}
+
+function loadImagesFromURLs(urls){
+  const clean = urls.map(s => s.trim()).filter(Boolean);
+  return Promise.all(clean.map(u => new Promise((res,rej)=>{
+    const img = new Image();
+    img.crossOrigin = "Anonymous";
+    img.onload = ()=> res(img);
+    img.onerror = ()=> {
+      // fallback: tiny placeholder
+      const p = document.createElement('canvas');
+      p.width = p.height = 64;
+      const pc = p.getContext('2d');
+      pc.fillStyle = '#7b8794'; pc.fillRect(0,0,64,64);
+      pc.fillStyle = '#fff'; pc.fillText('?',20,38);
+      const img2 = new Image();
+      img2.onload = ()=> res(img2);
+      img2.src = p.toDataURL();
+    };
+    img.src = u;
+  })));
+}
+
+function resetGame(){
+  avatars = [];
+  running = false;
+  lastElimTime = 0;
+  day = 1;
+  aliveLabel.textContent = 0;
+  followersCountLabel.textContent = 0;
+  dayLabel.textContent = day;
+}
+
+function setupAvatars(images){
+  avatars = images.map((img,i)=>{
+    const r = 34 + Math.random()*20; // radius
+    const x = Math.random()*(W-2*r)+r;
+    const y = Math.random()*(H-2*r)+r;
+    const angle = Math.random()*Math.PI*2;
+    const speed = (0.3 + Math.random()*0.8) * speedFactor;
+    return {img, x,y, vx:Math.cos(angle)*speed, vy:Math.sin(angle)*speed, r, alive:true, shrink:0, eliminatedAt:0};
+  });
+  aliveLabel.textContent = avatars.length;
+  followersCountLabel.textContent = avatars.length.toLocaleString('es-AR');
+  dayLabel.textContent = day;
+}
+
+loadBtn.addEventListener('click', async ()=>{
+  const urlText = urlsArea.value.trim();
+  resetGame();
+  try{
+    let images = [];
+    if(filesInput.files.length) {
+      images = await loadImagesFromFiles(filesInput.files);
+    }
+    if(urlText.length){
+      const urls = urlText.split('\n').map(s=>s.trim()).filter(Boolean);
+      const imgs = await loadImagesFromURLs(urls);
+      images = images.concat(imgs);
+    }
+    if(images.length === 0){
+      alert('No se cargó ninguna imagen. Subí archivos o pegá URLs.');
+      return;
+    }
+    setupAvatars(images);
+    drawOnce();
+  }catch(e){
+    console.error(e);
+    alert('Error cargando imágenes.');
+  }
+});
+
+sampleBtn.addEventListener('click', async ()=>{
+  // Cargar avatares de muestra (usamos pravatar.cc)
+  resetGame();
+  const urls = [];
+  for(let i=0;i<10;i++) urls.push('https://i.pravatar.cc/150?img='+(i+10));
+  try{
+    const imgs = await loadImagesFromURLs(urls);
+    setupAvatars(imgs);
+    drawOnce();
+  }catch(e){ console.error(e); alert('Error al cargar muestras'); }
+});
+
+startBtn.addEventListener('click', ()=> {
+  if(avatars.length === 0){ alert('Primero cargá imágenes.'); return; }
+  running = true;
+  lastElimTime = performance.now();
+  requestAnimationFrame(loop);
+});
+pauseBtn.addEventListener('click', ()=> { running = !running; pauseBtn.textContent = running ? 'Pausa' : 'Reanudar'; if(running) requestAnimationFrame(loop); });
+resetBtn.addEventListener('click', resetGame);
+
+// keyboard
+window.addEventListener('keydown', e=>{
+  if(e.code === 'Space'){ e.preventDefault(); running = !running; pauseBtn.textContent = running ? 'Pausa' : 'Reanudar'; if(running) requestAnimationFrame(loop); }
+});
+
+// drawing helpers
+function drawAvatar(av){
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(av.x, av.y, Math.max(1, av.r*(1-av.shrink)), 0, Math.PI*2);
+  ctx.closePath();
+  ctx.clip();
+  // draw image centered and covering
+  const d = av.r*2;
+  ctx.drawImage(av.img, av.x - d/2, av.y - d/2, d, d);
+  ctx.restore();
+  // border
+  ctx.beginPath();
+  ctx.arc(av.x, av.y, Math.max(1, av.r*(1-av.shrink)), 0, Math.PI*2);
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = av.alive ? 'rgba(255,255,255,0.08)' : 'rgba(255,60,60,0.6)';
+  ctx.stroke();
+}
+
+function drawOnce(){
+  ctx.clearRect(0,0,W,H);
+  // top text
+  ctx.fillStyle = '#fff';
+  ctx.font = '600 22px system-ui';
+  ctx.fillText('Follow to enter', 20, 34);
+  // avatars
+  avatars.forEach(av=>{
+    if(av.eliminatedAt && performance.now() - av.eliminatedAt > 2200) return;
+    ctx.save();
+    if(!av.alive){
+      const fade = Math.min(1, (performance.now()-av.eliminatedAt)/1200);
+      ctx.globalAlpha = Math.max(0, 1-fade);
+      ctx.translate(0, fade*30);
+    }
+    drawAvatar(av);
+    ctx.restore();
+  });
+}
+
+// game loop
+function loop(now){
+  if(!running) return;
+  ctx.clearRect(0,0,W,H);
+
+  // background top text
+  ctx.fillStyle = '#fff';
+  ctx.font = '600 22px system-ui';
+  ctx.fillText('Follow to enter', 20, 34);
+
+  // update movement
+  avatars.forEach(av=>{
+    if(!av.alive) return;
+    av.x += av.vx;
+    av.y += av.vy;
+    // bounds
+    if(av.x - av.r < 0){ av.x = av.r; av.vx *= -1; }
+    if(av.x + av.r > W){ av.x = W-av.r; av.vx *= -1; }
+    if(av.y - av.r < 48){ av.y = 48 + av.r; av.vy *= -1; } // leave top for text
+    if(av.y + av.r > H){ av.y = H-av.r; av.vy *= -1; }
+  });
+
+  // simple collision response (repel) to avoid overlap
+  for(let i=0;i<avatars.length;i++){
+    for(let j=i+1;j<avatars.length;j++){
+      const a = avatars[i], b = avatars[j];
+      if(!a.alive || !b.alive) continue;
+      const dx = b.x - a.x, dy = b.y - a.y;
+      const d = Math.hypot(dx,dy);
+      const minDist = a.r + b.r;
+      if(d < minDist && d > 0){
+        const overlap = (minDist - d) * 0.5;
+        const nx = dx/d, ny = dy/d;
+        b.x += nx * overlap;
+        b.y += ny * overlap;
+        a.x -= nx * overlap;
+        a.y -= ny * overlap;
+        // exchange small velocities
+        const vx = (a.vx + b.vx)/2, vy = (a.vy + b.vy)/2;
+        a.vx = vx; a.vy = vy;
+        b.vx = -vx*0.8; b.vy = -vy*0.8;
+      }
+    }
+  }
+
+  // draw avatars
+  avatars.forEach(av=>{
+    if(av.eliminatedAt && now - av.eliminatedAt > 2200) return;
+    if(!av.alive){
+      // shrink animation
+      const t = Math.min(1, (now - av.eliminatedAt)/1200);
+      av.shrink = t;
+      drawAvatar(av);
+      return;
+    }
+    drawAvatar(av);
+  });
+
+  // elimination logic
+  const alive = avatars.filter(a=>a.alive);
+  if(alive.length > 1 && now - lastElimTime > elimInterval){
+    // choose random victim with slight bias (smaller circles slightly higher chance)
+    const weights = alive.map(a => 1 / (a.r)); // smaller r -> higher weight
+    const sum = weights.reduce((s,x)=>s+x,0);
+    let rnd = Math.random() * sum;
+    let pick = alive[0];
+    for(let i=0;i<alive.length;i++){
+      rnd -= weights[i];
+      if(rnd <= 0){ pick = alive[i]; break; }
+    }
+    // eliminate pick
+    pick.alive = false;
+    pick.eliminatedAt = now;
+    // nudge others outward
+    avatars.forEach(a => {
+      if(a.alive){
+        const dx = a.x - pick.x, dy = a.y - pick.y;
+        const d = Math.hypot(dx,dy) + 0.001;
+        a.vx += (dx/d) * 0.8;
+        a.vy += (dy/d) * 0.8;
+      }
+    });
+
+    lastElimTime = now;
+    day += 1;
+    aliveLabel.textContent = avatars.filter(a=>a.alive).length;
+    dayLabel.textContent = day;
+  }
+
+  // when only one alive -> winner
+  const aliveNow = avatars.filter(a=>a.alive);
+  if(aliveNow.length === 1){
+    // winner celebration
+    const winner = aliveNow[0];
+    // pulse
+    const t = Math.sin(now/240) * 0.08 + 1;
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.beginPath();
+    ctx.arc(winner.x, winner.y, winner.r*1.6, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(20,160,80,0.06)';
+    ctx.fill();
+    ctx.restore();
+
+    // overlay text
+    ctx.fillStyle = '#fff';
+    ctx.font = '700 28px system-ui';
+    ctx.fillText('Winner!', winner.x - 40, winner.y - winner.r - 24);
+    ctx.font = '600 18px system-ui';
+    ctx.fillText('¡Ganador!', winner.x - 38, winner.y - winner.r - 4);
+
+    running = false;
+    // show small alert after pause
+    setTimeout(()=> {
+      alert('¡Tenemos un ganador!');
+    }, 300);
+  }
+
+  // HUD bottom-left
+  ctx.fillStyle = 'rgba(255,255,255,0.04)';
+  ctx.fillRect(16, H-72, 220, 56);
+  ctx.fillStyle = '#fff';
+  ctx.font = '600 14px system-ui';
+  ctx.fillText('Alive: ' + avatars.filter(a=>a.alive).length, 28, H-44);
+  ctx.font = '500 13px system-ui';
+  ctx.fillStyle = '#cbd5e1';
+  ctx.fillText('Day ' + day + ' • ' + avatars.length.toLocaleString('es-AR') + ' followers', 28, H-26);
+
+  requestAnimationFrame(loop);
+}
+
+// initial reset
+resetGame();
+drawOnce();
+</script>
+</body>
+</html>
