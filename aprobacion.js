@@ -1606,5 +1606,5 @@ const aprobacion = [
   {
     "time": "2025-09-15",
     "value": 65.0
-  }
+  },
 ];
