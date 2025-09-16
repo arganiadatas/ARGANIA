@@ -1,5 +1,4 @@
 const PBIArgania = [
-  [
   {
     "Time": "15/7/2024",
     "Value": "20,00"
