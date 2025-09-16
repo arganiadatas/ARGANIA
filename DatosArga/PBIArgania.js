@@ -1,4 +1,4 @@
-const PBIarga = [
+const PBIArgania = [
   [
   {
     "Time": "15/7/2024",
