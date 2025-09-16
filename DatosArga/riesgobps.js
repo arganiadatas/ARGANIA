@@ -1398,7 +1398,7 @@ const riesgobps = [
   {
     "Time": "2025-07-16",
     "Value": "1844813071889"
-  },
+  }, //actualizate.
   {
     "Time": "2025-07-17",
     "Value": "1566371633467"
