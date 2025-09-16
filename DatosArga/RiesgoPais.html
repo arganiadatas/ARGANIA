@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Aprobacion Gubernamental</title>
+  <title>Riesgo País</title>
   <link rel="icon" href="https://e7.pngegg.com/pngimages/302/913/png-clipart-approved-approved-thumbnail.png">
   <style>
     body {
@@ -21,12 +21,12 @@
   </style>
 </head>
 <body>
-  <h2>📈 Cotizaciones Nov 2024 - Sep 2025</h2>
+  <h2>Riesgo País</h2>
   <div id="chart"></div>
 
   <!-- Scripts locales al final -->
   <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.0.0/dist/lightweight-charts.standalone.production.js"></script>
-<script src="aprobacion.js"></script>
+<script src="riesgobps.js"></script>
 
 <script>
   const chart = LightweightCharts.createChart(document.getElementById('chart'), {
@@ -43,7 +43,7 @@
   priceLineVisible: false,
 });
 
-areaSeries.setData(aprobacion);
+areaSeries.setData(riesgobps);
 
 </script>
 
