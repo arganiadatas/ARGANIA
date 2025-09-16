@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Aprobacion Gubernamental</title>
+  <link rel="icon" href="https://e7.pngegg.com/pngimages/302/913/png-clipart-approved-approved-thumbnail.png">
+  <style>
+    body {
+      background: #111;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    #chart {
+      width: 95%;
+      height: 600px;
+      margin: auto;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <h2>📈 Cotizaciones Nov 2024 - Sep 2025</h2>
+  <div id="chart"></div>
+
+  <!-- Scripts locales al final -->
+  <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.0.0/dist/lightweight-charts.standalone.production.js"></script>
+<script src="aprobacion.js"></script>
+
+<script>
+  const chart = LightweightCharts.createChart(document.getElementById('chart'), {
+    layout: { background: { color: '#111' }, textColor: '#fff' },
+    grid: { vertLines: { color: 'rgba(255,255,255,0.1)' }, horzLines: { color: 'rgba(255,255,255,0.1)' } },
+    timeScale: { timeVisible: true, secondsVisible: false },
+  });
+
+  const areaSeries = chart.addAreaSeries({
+  lineColor: '#e60073',
+  topColor: 'rgba(230,0,115,0.4)',   // rosa transparente arriba
+  bottomColor: 'rgba(17,17,17,0.2)', // fondo oscuro transparente abajo
+  lineWidth: 2,
+  priceLineVisible: false,
+});
+
+areaSeries.setData(aprobacion);
+
+</script>
+
+</body>
+</html>
