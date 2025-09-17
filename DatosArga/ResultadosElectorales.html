@@ -10,14 +10,16 @@
       margin: 0;
       padding: 20px;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
     }
     .card {
       background: white;
       border-radius: 10px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       padding: 20px;
-      width: 400px;
+      width: 420px;
     }
     .title {
       font-weight: bold;
@@ -27,7 +29,7 @@
       padding-bottom: 8px;
     }
     .party {
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
     .party-name {
       font-weight: bold;
@@ -47,37 +49,114 @@
     .bar {
       height: 100%;
     }
+    .general-winner {
+      font-size: 22px;
+      text-align: center;
+      font-weight: bold;
+    }
+    .general-sub {
+      text-align: center;
+      color: #555;
+      margin-top: 4px;
+    }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="title">Agrupaciones políticas</div>
-    <div id="results"></div>
+  <!-- Cuadro general -->
+  <div class="card" id="general-card">
+    <div class="title">Ganador General</div>
+    <div id="general"></div>
   </div>
 
+  <!-- Aquí irán las tarjetas de cada ciudad -->
+  <div id="cities"></div>
+
   <script>
-    // Aquí podrían venir de tu API con fetch("/api/summary")
-    const data = [
-      { partido: "UNION POR LA PATRIA", porcentaje: 36.69, votos: 9645983, color: "#0284c7", colorSec: "#bae6fd" },
-      { partido: "LA LIBERTAD AVANZA", porcentaje: 29.99, votos: 7884336, color: "#9333ea", colorSec: "#e9d5ff" },
-      { partido: "JUNTOS POR EL CAMBIO", porcentaje: 23.84, votos: 6267152, color: "#eab308", colorSec: "#fef9c3" },
-      { partido: "HACEMOS POR NUESTRO PAIS", porcentaje: 6.79, votos: 1784315, color: "#312e81", colorSec: "#c7d2fe" }
-    ];
+    // ================================
+    // DATOS (ejemplo)
+    // ================================
+    const electionData = {
+      "FURMUL": [
+        { partido: "UNION POR LA PATRIA", porcentaje: 35.2, votos: 12450, color: "#0284c7", colorSec: "#bae6fd" },
+        { partido: "LA LIBERTAD AVANZA", porcentaje: 31.4, votos: 11120, color: "#9333ea", colorSec: "#e9d5ff" },
+        { partido: "JUNTOS POR EL CAMBIO", porcentaje: 22.1, votos: 7840, color: "#eab308", colorSec: "#fef9c3" }
+      ],
+      "TOURRIS": [
+        { partido: "UNION POR LA PATRIA", porcentaje: 40.5, votos: 15600, color: "#0284c7", colorSec: "#bae6fd" },
+        { partido: "LA LIBERTAD AVANZA", porcentaje: 28.7, votos: 11050, color: "#9333ea", colorSec: "#e9d5ff" },
+        { partido: "JUNTOS POR EL CAMBIO", porcentaje: 24.0, votos: 9200, color: "#eab308", colorSec: "#fef9c3" }
+      ],
+      "DARVILLAMBRE": [
+        { partido: "LA LIBERTAD AVANZA", porcentaje: 38.0, votos: 9800, color: "#9333ea", colorSec: "#e9d5ff" },
+        { partido: "UNION POR LA PATRIA", porcentaje: 34.0, votos: 8800, color: "#0284c7", colorSec: "#bae6fd" },
+        { partido: "JUNTOS POR EL CAMBIO", porcentaje: 20.0, votos: 5200, color: "#eab308", colorSec: "#fef9c3" }
+      ],
+      "GAMPSSENAY": [
+        { partido: "JUNTOS POR EL CAMBIO", porcentaje: 36.5, votos: 11200, color: "#eab308", colorSec: "#fef9c3" },
+        { partido: "UNION POR LA PATRIA", porcentaje: 33.2, votos: 10150, color: "#0284c7", colorSec: "#bae6fd" },
+        { partido: "LA LIBERTAD AVANZA", porcentaje: 25.0, votos: 7650, color: "#9333ea", colorSec: "#e9d5ff" }
+      ],
+      "RUANNESTOLI": [
+        { partido: "UNION POR LA PATRIA", porcentaje: 37.7, votos: 12800, color: "#0284c7", colorSec: "#bae6fd" },
+        { partido: "LA LIBERTAD AVANZA", porcentaje: 32.3, votos: 11000, color: "#9333ea", colorSec: "#e9d5ff" },
+        { partido: "JUNTOS POR EL CAMBIO", porcentaje: 20.5, votos: 6980, color: "#eab308", colorSec: "#fef9c3" }
+      ],
+      "VILLA MERCEDES": [
+        { partido: "LA LIBERTAD AVANZA", porcentaje: 39.9, votos: 15200, color: "#9333ea", colorSec: "#e9d5ff" },
+        { partido: "UNION POR LA PATRIA", porcentaje: 31.0, votos: 11800, color: "#0284c7", colorSec: "#bae6fd" },
+        { partido: "JUNTOS POR EL CAMBIO", porcentaje: 22.4, votos: 8500, color: "#eab308", colorSec: "#fef9c3" }
+      ]
+    };
 
-    const container = document.getElementById("results");
+    // ================================
+    // FUNCIONES
+    // ================================
+    function renderCityCard(city, results) {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `<div class="title">${city}</div>`;
+      results.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "party";
+        div.innerHTML = `
+          <div class="party-name">${item.partido}</div>
+          <div class="party-stats">${item.porcentaje.toFixed(2)}% — ${item.votos.toLocaleString()} votos</div>
+          <div class="bar-container" style="background:${item.colorSec}">
+            <div class="bar" style="width:${item.porcentaje}%; background:${item.color}"></div>
+          </div>
+        `;
+        card.appendChild(div);
+      });
+      return card;
+    }
 
-    data.forEach(item => {
-      const div = document.createElement("div");
-      div.className = "party";
-      div.innerHTML = `
-        <div class="party-name">${item.partido}</div>
-        <div class="party-stats">${item.porcentaje.toFixed(2)}% — ${item.votos.toLocaleString()} votos</div>
-        <div class="bar-container" style="background:${item.colorSec}">
-          <div class="bar" style="width:${item.porcentaje}%; background:${item.color}"></div>
-        </div>
+    function renderAll() {
+      const citiesContainer = document.getElementById("cities");
+      citiesContainer.innerHTML = "";
+
+      // Calcular el ganador general
+      const totals = {};
+      for (const city in electionData) {
+        electionData[city].forEach(item => {
+          totals[item.partido] = (totals[item.partido] || 0) + item.votos;
+        });
+      }
+      const winner = Object.entries(totals).sort((a, b) => b[1] - a[1])[0];
+      const winnerName = winner[0];
+      const winnerVotes = winner[1].toLocaleString();
+
+      document.getElementById("general").innerHTML = `
+        <div class="general-winner">${winnerName}</div>
+        <div class="general-sub">${winnerVotes} votos totales</div>
       `;
-      container.appendChild(div);
-    });
+
+      // Renderizar tarjetas por ciudad
+      for (const city in electionData) {
+        citiesContainer.appendChild(renderCityCard(city, electionData[city]));
+      }
+    }
+
+    renderAll();
   </script>
 </body>
 </html>
