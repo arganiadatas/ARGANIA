@@ -1,0 +1,236 @@
+<!doctype html>
+<!--
+  página-electoral.html
+  Single-file example: muestra datos electorales con tabla, gráfico y mapa GeoJSON.
+  - Reemplace `electionData` por fetch('/api/results') o por un JSON externo.
+  - Usa Chart.js (gráfico de barras) y Leaflet (mapa con GeoJSON)
+  - Funcionalidades: ordenar, buscar, exportar CSV, autorefresh.
+-->
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Página electoral - Ejemplo</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    :root{--bg:#0f1720;--card:#0b1220;--accent:#06b6d4;--muted:#99a3b3;--text:#f8fafc}
+    body{font-family:Inter, Arial, sans-serif;background:linear-gradient(180deg,#071025, #071a2a);color:var(--text);margin:0;padding:18px}
+    .wrap{max-width:1100px;margin:0 auto}
+    header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+    h1{font-size:20px;margin:0}
+    .controls{display:flex;gap:8px;margin:12px 0;flex-wrap:wrap}
+    .card{background:rgba(255,255,255,0.03);padding:12px;border-radius:10px;box-shadow:0 6px 18px rgba(2,6,23,0.6)}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:6px 8px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.03)}
+    th{font-size:13px;color:var(--muted)}
+    #map{height:320px;border-radius:8px}
+    .grid{display:grid;grid-template-columns:1fr 420px;gap:12px}
+    @media(max-width:900px){.grid{grid-template-columns:1fr}}
+    .small{font-size:13px;color:var(--muted)}
+    .btn{background:var(--accent);border:none;padding:8px 10px;border-radius:8px;color:#022;cursor:pointer}
+    input[type=text]{padding:8px;border-radius:8px;border:none;background:#07202b;color:var(--text)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='36' height='36'><rect rx='8' width='36' height='36' fill='%2306b6d4'/></svg>" alt="logo" style="width:36px;height:36px;border-radius:6px"/>
+      <div>
+        <h1>Página Electoral — Resultados en vivo (ejemplo)</h1>
+        <div class="small">Muestra datos por mesa/partido, resumen gráfico y mapa por zona.</div>
+      </div>
+    </header>
+
+    <div class="controls card">
+      <input id="search" type="text" placeholder="Buscar mesa, partido o zona" style="min-width:260px;" />
+      <button class="btn" id="refreshBtn">Refrescar</button>
+      <button class="btn" id="exportBtn">Exportar CSV</button>
+      <label class="small" style="margin-left:auto">Auto-refresh:
+        <select id="autoRefresh" style="margin-left:6px;padding:6px;border-radius:6px;background:#07202b;color:var(--text);border:none">
+          <option value="0">Off</option>
+          <option value="10000">10s</option>
+          <option value="30000">30s</option>
+          <option value="60000">60s</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="grid" style="margin-top:12px">
+      <div class="card" id="leftCol">
+        <h3 style="margin-top:0">Detalle por Mesa</h3>
+        <div style="max-height:380px;overflow:auto">
+          <table id="resultsTable">
+            <thead>
+              <tr><th>Mesa</th><th>Zona</th><th>Partido</th><th>Votos</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <div class="card" style="margin-bottom:12px">
+          <h3 style="margin:0 0 8px 0">Resumen por Partido</h3>
+          <canvas id="barChart" width="400" height="200"></canvas>
+        </div>
+
+        <div class="card">
+          <h3 style="margin:0 0 8px 0">Mapa por Zona (GeoJSON)</h3>
+          <div id="map"></div>
+        </div>
+      </div>
+    </div>
+
+    <footer style="margin-top:12px;color:var(--muted);font-size:13px">Ejemplo generado: reemplace la fuente de datos con su API. Fecha ejemplo: <span id="lastUpdate">-</span></footer>
+  </div>
+
+  <!-- Dependencias CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    // ----------------------
+    // Ejemplo de datos (reemplazar por fetch a su endpoint)
+    // Cada fila: mesa, zona, partido, votos
+    const electionData = [
+      { mesa: '001', zona: 'Centro', partido: 'Rojo', votos: 412 },
+      { mesa: '002', zona: 'Centro', partido: 'Azul', votos: 380 },
+      { mesa: '003', zona: 'Norte', partido: 'Rojo', votos: 201 },
+      { mesa: '004', zona: 'Norte', partido: 'Verde', votos: 99 },
+      { mesa: '005', zona: 'Sur', partido: 'Azul', votos: 540 },
+      { mesa: '006', zona: 'Sur', partido: 'Rojo', votos: 212 }
+    ];
+
+    // Ejemplo GeoJSON simple (zonas)
+    const zonesGeoJSON = {
+      "type": "FeatureCollection",
+      "features": [
+        {"type":"Feature","properties":{"zona":"Centro"},"geometry":{"type":"Polygon","coordinates":[[[ -58.38, -34.60 ],[ -58.37, -34.60 ],[ -58.37, -34.59],[ -58.38, -34.59],[ -58.38, -34.60]]] }},
+        {"type":"Feature","properties":{"zona":"Norte"},"geometry":{"type":"Polygon","coordinates":[[[ -58.38, -34.59 ],[ -58.37, -34.59 ],[ -58.37, -34.58],[ -58.38, -34.58],[ -58.38, -34.59]]] }},
+        {"type":"Feature","properties":{"zona":"Sur"},"geometry":{"type":"Polygon","coordinates":[[[ -58.38, -34.61 ],[ -58.37, -34.61 ],[ -58.37, -34.60],[ -58.38, -34.60],[ -58.38, -34.61]]] }}
+      ]
+    };
+    // ----------------------
+
+    let currentData = [];
+    let chart;
+    const lastUpdateEl = document.getElementById('lastUpdate');
+
+    function fetchData(){
+      // Aquí podría hacer: return fetch('/api/results').then(r=>r.json())
+      // En este ejemplo devolvemos una promesa con datos de ejemplo
+      return new Promise(resolve=>{
+        setTimeout(()=>resolve(JSON.parse(JSON.stringify(electionData))), 200);
+      });
+    }
+
+    function renderTable(data){
+      const tbody = document.querySelector('#resultsTable tbody');
+      tbody.innerHTML = '';
+      for(const row of data){
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${row.mesa}</td><td>${row.zona}</td><td>${row.partido}</td><td style="text-align:right">${row.votos}</td>`;
+        tbody.appendChild(tr);
+      }
+    }
+
+    function aggregateByParty(data){
+      const map = new Map();
+      for(const r of data){
+        map.set(r.partido, (map.get(r.partido)||0) + Number(r.votos));
+      }
+      return Array.from(map.entries()).map(([k,v])=>({partido:k,votos:v})).sort((a,b)=>b.votos-a.votos);
+    }
+
+    function renderChart(agg){
+      const ctx = document.getElementById('barChart').getContext('2d');
+      const labels = agg.map(a=>a.partido);
+      const values = agg.map(a=>a.votos);
+      if(chart) chart.destroy();
+      chart = new Chart(ctx, {
+        type: 'bar',
+        data: { labels, datasets: [{ label: 'Votos', data: values }] },
+        options: { responsive:true, plugins:{legend:{display:false}} }
+      });
+    }
+
+    // Mapa Leaflet
+    let map, geoLayer;
+    function initMap(){
+      map = L.map('map').setView([-34.60, -58.37], 14);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution:''}).addTo(map);
+      geoLayer = L.geoJSON(zonesGeoJSON, {
+        style: ()=>({color:'#06b6d4',weight:2,fillOpacity:0.12}),
+        onEachFeature: (feat,layer)=>{
+          const z = feat.properties.zona;
+          layer.bindPopup(`<strong>${z}</strong>`);
+        }
+      }).addTo(map);
+    }
+
+    function colorZonesByResults(data){
+      // Calcular votos por zona y colorear en el mapa
+      const byZone = data.reduce((acc,r)=>{ acc[r.zona] = (acc[r.zona]||0)+r.votos; return acc },{});
+      if(!geoLayer) return;
+      geoLayer.eachLayer(layer=>{
+        const z = layer.feature.properties.zona;
+        const val = byZone[z]||0;
+        // escala sencilla
+        const fill = val>500? '#023047' : val>300? '#05668d' : val>150? '#28a7b5' : '#d6f9fd';
+        layer.setStyle({fillColor: fill, fillOpacity:0.6});
+        layer.bindTooltip(`${z}: ${val} votos`);
+      });
+    }
+
+    // Export CSV
+    function exportCSV(data){
+      const header = ['mesa','zona','partido','votos'];
+      const rows = data.map(r=>[r.mesa,r.zona,r.partido,r.votos].map(v=>`"${v}"`).join(','));
+      const csv = [header.join(','), ...rows].join('\n');
+      const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = 'resultados.csv'; a.click(); URL.revokeObjectURL(url);
+    }
+
+    // Buscador simple
+    document.getElementById('search').addEventListener('input', (e)=>{
+      const q = e.target.value.trim().toLowerCase();
+      const filtered = currentData.filter(r=> [r.mesa,r.zona,r.partido,String(r.votos)].join(' ').toLowerCase().includes(q));
+      renderTable(filtered);
+      renderChart(aggregateByParty(filtered));
+      colorZonesByResults(filtered);
+    });
+
+    document.getElementById('refreshBtn').addEventListener('click', loadAndRender);
+    document.getElementById('exportBtn').addEventListener('click', ()=>exportCSV(currentData));
+
+    // Auto refresh control
+    let autoHandle = null;
+    document.getElementById('autoRefresh').addEventListener('change', (e)=>{
+      const ms = Number(e.target.value);
+      if(autoHandle) { clearInterval(autoHandle); autoHandle = null }
+      if(ms>0) autoHandle = setInterval(loadAndRender, ms);
+    });
+
+    async function loadAndRender(){
+      try{
+        const data = await fetchData();
+        currentData = data;
+        renderTable(data);
+        const agg = aggregateByParty(data);
+        renderChart(agg);
+        colorZonesByResults(data);
+        lastUpdateEl.textContent = new Date().toLocaleString();
+      }catch(err){
+        console.error('Error cargando datos', err);
+      }
+    }
+
+    // Init
+    window.addEventListener('load', ()=>{
+      initMap();
+      loadAndRender();
+    });
+  </script>
+</body>
+</html>
