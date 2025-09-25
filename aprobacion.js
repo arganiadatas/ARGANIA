@@ -1639,4 +1639,8 @@ const aprobacion = [
     "time": "2025-09-23",
     "value": 62
   },
+  {
+    "time": "2025-09-24",
+    "value": 65
+  },
 ];
